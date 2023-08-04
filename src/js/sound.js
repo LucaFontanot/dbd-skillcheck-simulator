@@ -16,7 +16,17 @@ const audio = {
     failed: failedSound,
     failed2: failedSound2,
     sparks: sparksSound
-}
+};
+(async function(){
+    //preload files
+    for (let aud in audio){
+        const response = await fetch(audio[aud]);  // Adjust the path accordingly
+        if (response.ok) {
+            const blob = await response.blob();
+            audio[aud] = URL.createObjectURL(blob);
+        }
+    }
+})();
 
 const playSound = track => {
     const sound = new Audio(audio[track])
