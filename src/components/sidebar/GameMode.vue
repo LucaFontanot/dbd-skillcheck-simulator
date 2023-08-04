@@ -20,25 +20,13 @@
 <script>
 
 
-import {generateKillerPerks} from '@/js/perks'
-import {notification} from '@/js/library/use'
+import {changeGameModeFunc} from "@/js/gamemode/changeGamemode";
 
 export default {
     name: 'GameMode',
     methods: {
         changeGameMode(mode){
-            if (this.$store.state.gameStatus.now.generatorStarted) {
-                notification('Stop your current game then select again')
-                return
-            }
-            if (this.$store.state.gameStatus.now.gameMode !== mode) {
-                this.$store.state.gameStatus.now.gameMode = mode
-
-                if (mode !== 'normal') {
-                    generateKillerPerks()                    
-                }
-                // killer perks will be generated in funtion on the selected game mode
-            }
+          changeGameModeFunc(mode)
         },
         changeGameEffect(){
               if (this.$store.state.gameStatus.now.effects.includes('madness')) {
@@ -60,7 +48,7 @@ export default {
             return this.$store.state.gameStatus.now.gameModes
         },
                 // eslint-disable-next-line vue/return-in-computed-property
-                effect(){
+        effect(){
             if (this.$store.state.gameStatus.now.effects.includes('madness')) {
                 return 'activeGameMode'
             }
@@ -101,7 +89,7 @@ export default {
 
     box-shadow: 0 2px 5px 0 rgba(0, 0, 0, .4);
     
-    background: var(--texture-two) center center var(--font-color-one);
+    background: var(--font-color-one);
     background-size: cover;
     background-blend-mode: multiply;
 }
@@ -127,10 +115,10 @@ export default {
         color: #ffffff !important;
     font-weight: 700 !important;
     letter-spacing: 2px;
-    background: var(--texture-two) !important;
     -webkit-box-shadow: 0px 5px 40px -10px rgba(0,0,0,0.57);
     -moz-box-shadow: 0px 5px 40px -10px rgba(0,0,0,0.57);
     transition: all 0.3s ease 0s;
+     background-color: #818181 !important;
 }
 
 </style>

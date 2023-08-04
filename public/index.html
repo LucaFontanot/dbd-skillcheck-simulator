@@ -1,18 +1,111 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width,initial-scale=1.0">
-    <meta name="description" content="Dead by Daylight Skillcheck Simulator - Train your skill.">
-    <link rel="icon" href="<%= BASE_URL %>favicon.ico">
-    <title>DBD Skillcheck Simulator</title>
+      <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+      <meta name="google" content="nositelinkssearchbox" />
+      <meta name="description" content="Dead by Daylight Skillcheck Simulator. Killer perks, items and add-ons that can affect the Skillcheck in any way can be tested and learned here.">
+      <link rel="icon" href="favicon.ico">
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Quattrocento">
+
+      <title>DBD Skillcheck Simulator with Perks - LucaServers</title>
   </head>
   <body>
     <noscript>
       <strong>We're sorry but dbd-skillchecksimulator doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
     </noscript>
     <div id="app"></div>
+    <div style="display: none"><!-- THIS IS FOR THE ENGINE ONLY -->
+        <h1 id="dead-by-daylight-skillcheck-simulator">Dead by Daylight Skillcheck Simulator</h1>
+        <p>Dead by Daylight Skillcheck Simulator - Train your skills.
+            Killer perks, items and add-ons that can affect the Skillcheck in any way can be tested and learned here.</p>
+        <h2 id="perks">Perks</h2>
+        <p>The Killer Perks can be activated/deactivated using <strong>CUSTOM</strong> mode from the <strong>GAME MODE</strong> menu. Selecting <strong>CUSTOM</strong> mode, will activate the selected perks at the maximum tier or at the maximum number of tokens(Hex: Huntress Lullaby).
+            There are 3 preset mode <strong>EASY</strong> <strong>MEDIUM</strong> <strong>HARD</strong></p>
+        <h4 id="killer-perks-">Killer perks:</h4>
+        <ul>
+            <li>Hex: Ruin - <strong>Version 2.6.0</strong> <em>(got nerfed in <strong>Version 3.5.0</strong>)</em> <ul>
+                <li>Good Skill Checks result in 3/4/5 % regression on the Generator.</li>
+                <li>Great Skill Checks grant 0 % bonus progression on the Generator.</li>
+            </ul>
+            </li>
+            <li>Hex: Huntress Lullaby <ul>
+                <li>1 to 4 Tokens: Time between the Skill Check warning sound and the Skill Check becomes shorter.</li>
+                <li>5 Tokens: No Skill Check warning.</li>
+            </ul>
+            </li>
+            <li>Unnerving Presence<ul>
+                <li>Triggered Skill Checks&#39; success zones are reduced by 40/50/60 %. </li>
+            </ul>
+            </li>
+            <li>Oppression<ul>
+                <li>A hard Skill Check is made after killer kicks a generator</li>
+            </ul>
+            </li>
+            <li>Coulrophobia<ul>
+                <li>Increases the Rotation speed of Skill Checks by +50 %<h4 id="survivor-perks-">Survivor perks:</h4>
+                </li>
+            </ul>
+            </li>
+            <li>This is not happening<ul>
+                <li>Increase the great area when injured</li>
+            </ul>
+            </li>
+            <li>Fast Track<ul>
+                <li>Set how many tokens to simulate a real game scenario</li>
+                <li>Each token gives you 1% of progress on successful Great Skill Check</li>
+            </ul>
+            </li>
+            <li>Stake out<ul>
+                <li>Consume a token to turn a good Skill Check into a Great Skill Check</li>
+            </ul>
+            </li>
+            <li>Hyperfocus<ul>
+                <li>For each Token, the following stack-able effects are applied:<ul>
+                    <li>Increases the Skill Check Rotation speed by +4 % per Token. </li>
+                    <li>Increases the Skill Check Bonus progression by 10/20/30 % of its base value per Token.</li>
+                </ul>
+                </li>
+            </ul>
+            </li>
+        </ul>
+        <h2 id="toolboxes">Toolboxes</h2>
+        <p>The Toolbox is an item that can be used to repair generators more quickly. Different Toolboxes have different uses and not all of them are good for both uses. Add-ons can be equipped to enhance their speed and durability. Toolboxes and add-ons can be bought with bloodpoints. You can gain bloodpoins fast by hitting great skillchecks multiple times. You can gain free Bloodpoints by finding the secret :)</p>
+        <h2 id="local-installation">Local Installation</h2>
+        <p>DBD Skillcheck Simulator requires <a href="https://nodejs.org/">Node.js</a> v12+ to run
+            Install the dependencies and start the server.</p>
+        <pre><code class="lang-sh"><span class="hljs-variable">$ </span>cd dbd-skillcheck-simulator
+            <span class="hljs-variable">$ </span>npm install
+            <span class="hljs-variable">$ </span>npm run serve
+        </code></pre>
+        <p>Go to <strong>localhost:8080</strong> to play.</p>
+        <h2 id="changelog">Changelog</h2>
+        <h3 id="0-1-2">0.1.2</h3>
+        <ul>
+            <li>Changed wiggle speed to better match the game</li>
+            <li>New perk: Coulrophobia. It should apply only on heals, but the perk is added in generator mode for convenience</li>
+            <li>New perk: Hyperfocus</li>
+            <li>New perk: Stake out</li>
+            <li>New perk: Fast Track</li>
+            <li>Added Madness effect to glyph</li>
+            <li>Changed madness animation</li>
+            <li>Added Madness effect to Wiggle, bcz why not</li>
+            <li>Fixed DS Madness</li>
+            <h3 id="0-1-1">0.1.1</h3>
+            <li>Added Glyph mode</li>
+            <li>Added Custom and preset modes</li>
+            <li>Added Brand new part</li>
+            <li>Added customizable tokens and tiers</li>
+            <li>Added the new grade system</li>
+            <li>Added Wiggle Skill Check</li>
+        </ul>
+        <h2 id="contribute">Contribute</h2>
+        <p>Want to contribute? Great!
+            This project uses Javascript and VueJS, feel free to improve the project if you found bugs or have other ideeas.</p>
+        <h2 id="license">License</h2>
+        <p>MIT</p>
+    </div>
     <!-- built files will be auto injected -->
   </body>
 </html>

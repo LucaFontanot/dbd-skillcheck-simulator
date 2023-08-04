@@ -1,6 +1,8 @@
 <template>
   <div oncontextmenu="return false;" id="app">
-    <div :style="{ backgroundImage: 'url(' + image + ')' }" class="background">
+    <div class="background">
+      <img fetchpriority="high" src="./assets/backgrounds/bg-hero.webp" class="backgroundimg blur">
+      <img fetchpriority="low" :src="image" class="backgroundimg">
     </div>
     <Skillcheck/>
     <GeneralStats/>
@@ -38,6 +40,8 @@ import ActiveKillerPerks from './components/ActiveKillerPerks.vue'
 
 // eslint-disable-next-line no-unused-vars
 import * as events from '@/js/events/keyboardEvents.js'
+// eslint-disable-next-line no-unused-vars
+import * as controllerEvents from '@/js/events/controllerEvent.js'
 
 
 export default {
@@ -82,7 +86,7 @@ body{
 :root{
     font-size: 0.58vw;
     --circle-height: 145px;
-    --circle-width: 145px;               
+    --circle-width: 145px;
     --skillcheck-bar-width: 14px;
     --skillcheck-bar-height: 100px;
     --skillcheck-bar-gradient: radial-gradient(#ff0000, hsla(0, 70%, 5%, 0.00), rgba(0, 0, 0, 0));
@@ -91,23 +95,30 @@ body{
     --skillcheck-button-border: 1.5px solid #ffffff;
     --skillcheck-button-color: #ffffff;
     --general-stats-color: #ffffff;
-    --font-color-one: #91e4c8;
-    --font-color-two: #a5acaa;
-    --texture-one: url('../src/assets/backgrounds/texture20.png');
-    --texture-two: url('../src/assets/backgrounds/texture15.png');
-    --texture-tree: url('../src/assets/backgrounds/texture2.png')
+    --font-color-one: #3f3f3f;
+    --font-color-two: rgba(152, 152, 152, 0.43);
 }
 
 .background{
-    background: no-repeat center 20% fixed;
-    /* background-size: 100%; */
+    background: no-repeat center top fixed;
     position: fixed;
     top: 0;
     left: 0;
     background-size: 100%;
-    width: 100%;
-    height: 100%;
+    width: 100vw;
+    height: 100vh;
     z-index: -1;
+}
+
+.backgroundimg{
+  position: absolute;
+  width: 100vw;
+  height: auto;
+}
+
+.blur{
+  filter: blur(8px);
+  -webkit-filter: blur(8px);
 }
 
 .popper{

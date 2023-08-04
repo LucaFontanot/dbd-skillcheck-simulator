@@ -2,32 +2,40 @@
 
 import store from '@/store/store'
 
-import {startGenerator as startGen} from '@/js/generator/startGen.js'
-import {runGenerator as runGen} from '@/js/generator/runGen.js'
-import {stopGenerator as stopGen} from '@/js/generator/stopGen.js'
-import {skillcheckGeneration} from '@/js/skillcheckGeneration.js'
+import {startGenerator as startGen} from '@/js/gamemode/generator/startGen.js'
+import {runGenerator as runGen} from '@/js/gamemode/generator/runGen.js'
+import {stopGenerator as stopGen} from '@/js/gamemode/generator/stopGen.js'
 
-import {removeSkillCheck} from '@/js/animations/skillcheck/skillCheckAnim'
+import {skillcheckGenerator} from '@/js/skillchecks/generator'
+import {skillcheckDS} from '@/js/skillchecks/ds'
+import {dom} from "@/js/skillchecks/dom/domElements";
+import {removeSkillCheck, skillCheckAnimation} from '@/js/skillchecks/dom/skillCheckAnim'
 
 import {stopButtonAnimation} from '@/js/animations/buttons/stopButtonAnim.js'
 import {startButtonAnimation} from '@/js/animations/buttons/startButtonAnim.js'
 import {pauseButtonAnimation} from '@/js/animations/buttons/pauseButtonAnim.js'
 import {resumeButtonAnimation} from '@/js/animations/buttons/resumeButtonAnim.js'
-// import {generatorProgressOutAnimation} from '@/js/animations/generatorAnim'
-
-
+import {skillcheckGlyph} from "@/js/skillchecks/glyph";
+import {wiggleSkillcheck} from "@/js/skillchecks/wiggle";
+import {changeGameModeFunc} from "@/js/gamemode/changeGamemode";
 const checkLocked = () => {
     return store.state.gameEvents.events.locked
 }
 
 const checkMenu = () => {
     if (store.state.gameEvents.events.menu) {
-        store.state.gameEvents.events.menu = !store.state.gameEvents.events.menu 
+       store.state.gameEvents.events.menu = !store.state.gameEvents.events.menu
     }
 }
 
+//let perkStatus_before = {};
+
 // started game status
 const startGame = () => {
+  /*  perkStatus_before = {
+        killer:JSON.parse(JSON.stringify(store.state.gameStatus.killerPerks)),
+        surv:JSON.parse(JSON.stringify(store.state.gameStatus.survivorPerks)),
+    };*/
     if (checkLocked()) {
         return
     }
@@ -54,21 +62,29 @@ const startGame = () => {
     if (!store.state.gameEvents.events.startGame) {
         updateGameStatus()
 
-        if (store.state.gameStatus.now.gameMode == 'normal' || store.state.gameStatus.now.gameMode == 'training') {
+        if (['easy','medium','hard','custom'].includes(store.state.gameStatus.now.gameMode)) {
             startGen()
+        }else if (store.state.gameStatus.now.gameMode === 'ds') {
+            skillcheckDS();
+        }else if (store.state.gameStatus.now.gameMode === 'glyph') {
+            skillcheckGlyph();
+        }else if (store.state.gameStatus.now.gameMode === 'wiggle') {
+            wiggleSkillcheck();
         }
 
-        if (store.state.gameStatus.now.gameMode == 'ds') {
-            skillcheckGeneration()
-        }
-
-        // animation effect
         startButtonAnimation()
     }
 }
 
 // stoped game status
 const stopGame = () => {
+    changeGameModeFunc(store.state.gameStatus.now.gameMode)
+    dom.now=0;
+    store.state.gameStatus.now.wiggle.started = false;
+
+    skillCheckAnimation.pause();
+    skillCheckAnimation.reset();
+
     if (checkLocked()) {
         return
     }
@@ -92,7 +108,7 @@ const stopGame = () => {
     if (store.state.gameEvents.events.startGame) {
         updateGameStatus()
 
-        if (store.state.gameStatus.now.gameMode == 'normal' || store.state.gameStatus.now.gameMode == 'training') {
+        if (['easy','medium','hard','custom'].includes(store.state.gameStatus.now.gameMode)) {
             if (store.state.gameStatus.now.generatorPaused) {
                 store.state.gameStatus.now.generatorStoped = true
 
@@ -101,21 +117,17 @@ const stopGame = () => {
             } else{
                 store.state.gameStatus.now.generatorStoped = true
             }     
+        }else{
+            removeSkillCheck();
         }
-
-        if (store.state.gameStatus.now.gameMode == 'ds') {
-            removeSkillCheck()
-            // reset combo        
-        }
-
-        // buttons animation effect
-
         stopButtonAnimation()
     }
 }
 
 // paused game status
 const pauseGame = () => {
+    dom.now=0;
+    store.state.gameStatus.now.wiggle.started = false;
     if (checkLocked()) {
         return
     }
@@ -133,16 +145,11 @@ const pauseGame = () => {
 
     if (store.state.gameEvents.events.startGame && !store.state.gameEvents.events.pauseGame) {
         updateGameStatus()
-        if (store.state.gameStatus.now.gameMode == 'normal' || store.state.gameStatus.now.gameMode == 'training') {
+        if (['easy','medium','hard','custom'].includes(store.state.gameStatus.now.gameMode)) {
             store.state.gameStatus.now.generatorPaused = true
+        }else{
+            removeSkillCheck();
         }
-
-        if (store.state.gameStatus.now.gameMode == 'ds') {
-            removeSkillCheck()
-        }
-
-        // pause game anim effect
-
         pauseButtonAnimation()
     }
 }
@@ -152,7 +159,6 @@ const resumeGame = () => {
     if (checkLocked()) {
         return
     }
-
     checkMenu()
 
     // resumeGameAnim.play()
@@ -166,19 +172,20 @@ const resumeGame = () => {
 
     if (store.state.gameEvents.events.pauseGame) {
         updateGameStatus()
-        if (store.state.gameStatus.now.gameMode == 'normal' || store.state.gameStatus.now.gameMode == 'training') {
+        if (['easy','medium','hard','custom'].includes(store.state.gameStatus.now.gameMode)) {
                 store.state.gameStatus.now.generatorPaused = false
                 runGen()
-                skillcheckGeneration()
-        }
-
-        if (store.state.gameStatus.now.gameMode == 'ds') {
+                skillcheckGenerator()
+        }else if (store.state.gameStatus.now.gameMode === 'ds') {
             updateGameStatus()
-            skillcheckGeneration()
+            skillcheckDS();
+        }else if (store.state.gameStatus.now.gameMode === 'glyph') {
+            updateGameStatus()
+            skillcheckGlyph();
+        }else if (store.state.gameStatus.now.gameMode === 'wiggle') {
+            updateGameStatus()
+            wiggleSkillcheck();
         }
-
-        // anim btn
-
         resumeButtonAnimation()
     }
 }

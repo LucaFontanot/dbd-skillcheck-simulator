@@ -9,7 +9,7 @@ const getRandomArbitraryRange = (min, max, fixed) => {
 }
 
 const cleanLetters = word => {
-    return Number(word.replace(/[^\d.]/g, ''))
+    return (word.includes("rotate(-") ? -1 : 1)*Number(word.replace(/[^\d.]/g, ''))
 }
 
 const outOf = (value, from) => {

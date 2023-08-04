@@ -5,7 +5,6 @@ import {skillcheckSpawnCoordinates} from "@/js/drawSkillCheck";
 import {skillCheckAnimation} from "@/js/skillchecks/dom/skillCheckAnim";
 
 const drawClassicSkillCheck = async (props) => {
-    console.log(props)
     if (props.timeAudioDelay >= 0){
         playTrack('advertise')
         await ffs.delay(props.timeAudioDelay)

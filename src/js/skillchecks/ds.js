@@ -31,9 +31,14 @@ const skillcheckDS = async () => {
                 skillCheckAnimation.pause()
             }
             let ranEl = dom.skillcheck['skill-check-element']
-
-            ranEl.style.top = '50%'
-            ranEl.style.left = '50%'
+            if (store.state.gameStatus.now.effects.includes('madness')) {
+                let minSpace = (15 / 100) * window.innerHeight
+                ranEl.style.top = `${ffs.getRandomArbitraryRange(minSpace, window.innerHeight - minSpace)}px`
+                ranEl.style.left = `${ffs.getRandomArbitraryRange(minSpace, window.innerWidth - minSpace)}px`
+            } else {
+                ranEl.style.top = '50%'
+                ranEl.style.left = '50%'
+            }
             props.callbackComplete = function () {
                 store.commit('updateGameStatus', [{
                     state: 'events',

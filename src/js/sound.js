@@ -8,7 +8,6 @@ import sparksSound from '@/audio/sparks.ogg'
 // import {delay} from '@/js/library/math.js'
 import store from '@/store/store'
 import {playerOptions} from '@/js/status/options.js'
-import {skillcheckSpawnCoordinates} from '@/js/drawSkillCheck'
 
 const audio = {
     advertise: advertiseSound,
@@ -36,7 +35,7 @@ export default async function playTrack(track) {
                 playSound(track)
             }
             if (track == 'good') {
-                playSound(skillcheckSpawnCoordinates.mode == 'normal' ? 'good' : 'sparks')
+                playSound('good')
             }
 
             if (track == 'failed' && store.state.gameStatus.now.gameMode !== 'ds') {

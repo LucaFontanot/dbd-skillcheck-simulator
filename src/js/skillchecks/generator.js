@@ -4,7 +4,7 @@ import {playerOptions} from '@/js/status/options'
 import store from '@/store/store.js'
 import {dom} from '@/js/skillchecks/dom/domElements'
 import {generateKillerPerks} from "@/js/perks";
-import {skillCheckAnimation} from '@/js/skillchecks/dom/skillCheckAnim'
+import {skillCheckAnimation, skillCheckInit} from '@/js/skillchecks/dom/skillCheckAnim'
 import {drawClassicSkillCheck} from '@/js/skillchecks/drawer/classic'
 import {getSwitch} from '@/js/library/getSwitch'
 import {handleScore} from "@/js/needlePosition";
@@ -21,6 +21,7 @@ const skillcheckGenerator = async (perkEffectActive={}) => {
         timeAudioDelay: 500,
         successZoneSize: 50,
         greatZoneSize: 10,
+        speed: 1050,
         color: "#ffffff",
         circleColor:"#ffffff",
         ruin:false
@@ -78,7 +79,12 @@ const skillcheckGenerator = async (perkEffectActive={}) => {
             if (store.state.gameStatus.survivorPerks.thisIsNotHappening.active && (typeof perkEffectActive.oppression == "undefined" || perkEffectActive.oppression.active)) {
                 props.greatZoneSize = 15
             }
-
+            if (store.state.gameStatus.killerPerks.coulrophobia.active) {
+                props.speed = 600;
+            }
+            if (store.state.gameStatus.survivorPerks.hyperfocus.active) {
+                props.speed -= props.speed*((getSwitch(store.state.gameStatus.survivorPerks.hyperfocus, "tokens").val*4)/100);
+            }
             if (store.state.gameStatus.killerPerks.hexRuin.active) {
                 props.ruin = true;
                 props.color = "#B90000";
@@ -87,6 +93,8 @@ const skillcheckGenerator = async (perkEffectActive={}) => {
             props.callbackComplete = function () {
                 handleScore();
             };
+            store.state.gameStatus.now.props = props;
+            skillCheckInit();
             await drawClassicSkillCheck(props);
 
         }

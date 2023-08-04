@@ -10,11 +10,18 @@ const state = {
         resumeKey: 71, // G // resumeGeneratorKey
         skillCheckKey: 32 // Space // stopNeedleKey
     },
+    controller:{
+        skillCheckKey: 0, //A
+        startKey: 9,
+        stopKey: 8,
+        pauseKey: 9,
+        resumeKey: 9,
+    },
     mouse: {
         skillCheckKey: 2 // M2 // stopNeedleKey
     },
     custom: playerOptions,
-    backgroundURL: "https://steamcdn-a.akamaihd.net/steamcommunity/public/images/items/322330/4a1a9aaa02672104c56b52cc850cd84dcc15c95c.jpg",
+    backgroundURL: "https://steamcdn-a.akamaihd.net/steamcommunity/public/images/items/381210/1ffb8d3f83682e63b1b0ea460cec4cf9d2660eec.jpg",
 }
 
 export default {

@@ -119,6 +119,7 @@ const drawGlyphSkillCheck = async (props) => {
     context.lineWidth = sSize * 2 + 1
     context.strokeStyle = props.color
     context.stroke()
+
     if (firstart){
         dom.callbackComplete = props.callbackComplete;
         skillCheckAnimation.restart()

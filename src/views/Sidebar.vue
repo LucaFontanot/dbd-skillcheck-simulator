@@ -40,6 +40,9 @@
                 <div></div>
                 <div></div>
             </div>
+            <div v-if="firstOpen" class="tip">
+              <span>TIP: Open the MENU > Game Mode to customize the skillcheck</span>
+            </div>
 
         </div>
     </div>
@@ -72,6 +75,7 @@ export default {
       return{
           center: PlayerScore,
           openedMenu: false,
+          firstOpen: false
       }
   },
   components: {
@@ -87,7 +91,7 @@ export default {
   },
   computed:{
       leftTemplate(){
-        if (this.center == 'GameMode' && this.$store.state.gameStatus.now.gameMode == 'training') {
+        if (this.center == 'GameMode') {
             return TrainingMode
           }else if(this.center == 'PlayerInventory'){
             return EquipItems
@@ -110,10 +114,27 @@ export default {
         }
       }
   },
+  mounted() {
+    if(localStorage.getItem("firstRun")==null){
+      this.firstOpen=true;
+      localStorage.setItem("firstRun","0");
+    }
+  }
 }
 </script>
 
 <style>
+.tip{
+  font-size: 15pt;
+  position: absolute;
+  top: 2%;
+  left: 6%;
+  grid-gap: 0.4rem;
+  cursor: progress;
+  background-color: #4c4c4c;
+  padding: 5px;
+  border-radius: 2px;
+}
 
 .menu{
   position: absolute;
@@ -140,15 +161,14 @@ export default {
 .menu-btn div{
     height: .8vw;
     width: .8vw;
-
-    background: var(--texture-tree) center center var(--font-color-one);
+    background: var(--font-color-one);
     background-size: cover;
     background-blend-mode: multiply;
 }
 
 .navigation{
   box-shadow: 0 2px 5px 0 rgba(0, 0, 0, .4);
-  background: var(--texture-tree) center center var(--font-color-two);
+  background: var(--font-color-two);
   background-size: cover;
   background-blend-mode: multiply;
 
@@ -170,7 +190,7 @@ export default {
 .template-border{
   background-color: #FFC2C2;
   box-shadow: 0 2px 5px 0 rgba(0, 0, 0, .4);
-  background: var(--texture-tree) center center var(--font-color-two);
+  background: var(--font-color-two);
   background-size: cover;
   background-blend-mode: multiply;
   position: absolute;
@@ -183,21 +203,6 @@ export default {
   width: 20vw;
 }
 
-.item-showcase-border{
-  background-color: #FFC2C2;
-
-  background: var(--texture-tree) center center var(--font-color-two);
-  background-size: cover;
-  background-blend-mode: multiply;
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  border-radius: 2px;
-  z-index: -1;
-  top: -.5vw;
-  height: 11vw;
-  width: 16vw;
-}
 
 .navigation-items{
   display: flex;
@@ -221,12 +226,7 @@ export default {
 
 .simple-to{
 background-color: #8A9DDB;
-  background-position: center;
   /* background-repeat: no-repeat; */
-  background-size: cover;
-  background-image: url('../assets/backgrounds/texture3.png');
-  background-position: center;
-  background-size: cover;
   /* background-color: rgb(82, 190, 204); */
   color:aliceblue;
   padding: 0.01em;
@@ -249,8 +249,6 @@ background-color: #8A9DDB;
   width: 30vw;
   height: 25vw;
   color: white;
-
-  background: url('../assets/backgrounds/texture11.png') center center rgb(78, 78, 78);
   background-size: cover;
   background-blend-mode: multiply;
 }
@@ -261,11 +259,11 @@ background-color: #8A9DDB;
   border-bottom-right-radius: 2px;
   position: absolute;
   padding: 0px 2vw;
-  right: -20vw;
-  width: 20vw;
-  height: 10vw;
-  background: #242323;
-  background: url('../assets/backgrounds/texture11.png') center center rgb(83, 83, 83);
+  right: -27vw;
+  width: 28vw;
+  height: auto;
+  padding: 3vw;
+  background-color: #3f3f3f;
   background-blend-mode: multiply;
 }
 

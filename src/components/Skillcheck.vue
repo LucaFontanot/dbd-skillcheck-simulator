@@ -4,7 +4,7 @@
       <div ref="skill-check-needle" class="skillcheck-center">
         <div class="skillcheck-bar"></div>
       </div>
-      <div class="skillcheck-button">{{touch? 'Touch': keyboard[stopNeedleKey]+'/'+ mouse || String.fromCharCode(stopNeedleKey) || 'Unknown' }}</div>
+      <div class="skillcheck-button">{{touch? 'Touch': keyboard[stopNeedleKey]+' / '+ mouse + controller || String.fromCharCode(stopNeedleKey) || 'Unknown' }}</div>
       <canvas ref="skill-check-circle" height="145px" width="145px"></canvas>
     </div>
   </div>
@@ -12,9 +12,11 @@
 
 <script>
 
-  import {initDom} from '@/js/domElements'
+  import {initDom} from '@/js/skillchecks/dom/domElements'
   import keyCodes from '@/js/events/keyboard.js'
+  import {getMap} from '@/js/events/controllerEvent.js'
   import mouseCodes from '@/js/events/mouse.js'
+  import {XBOX} from "@/js/events/controller";
 
   // import {drawSkillCheck} from '@/js/drawSkillCheck.js'
 
@@ -27,6 +29,13 @@
       keyboard(){
         return keyCodes
       },
+      controller(){
+        for (let i in getMap()){
+          let g = getMap()[i];
+          return " / " + g[this.$store.state.playerSettings.controller.skillCheckKey]
+        }
+        return " / " + XBOX[this.$store.state.playerSettings.controller.skillCheckKey];
+      },
       mouse(){
         return mouseCodes.mouseCodes[this.$store.state.playerSettings.mouse.skillCheckKey]
       },
@@ -34,7 +43,7 @@
         let s = ('ontouchstart' in document.documentElement || navigator.maxTouchPoints) 
         return s == 1 || s == true ? true: false
       }
-    },  
+    },
     mounted() {
       this.$nextTick(() => {
         initDom('skillcheck', this.$refs)
@@ -84,35 +93,28 @@
     top: 50%;
     left: 50%;
     background: rgb(44, 44, 44);
-    font-size: 20px;
+    font-size: 13px;
     transform: translate(-50%, -50%);
   }
 
   .wiggleSkillCheck{
-    animation: shake 1.1s cubic-bezier(.4,.1,.2, 1) both;
+    animation: shake 0.5s cubic-bezier(.4,.1,.2, 1) both;
     transform: translate3d(0, 0, 0);
     perspective: 1000px;
+    animation-iteration-count: infinite;
   }
 
   @keyframes shake {
-    10%, 90% {
-        transform: translate3d(-1px, 0, 0);
-    }
-    
-    20%, 80% {
-        transform: translate3d(1px, 1px, 0);
-    }
-
-    30%, 50%, 70% {
-        transform: translate3d(-1px, -1px, 0);
-    }
-
-    5%, 15%, 25%, 35%, 45%, 65%, 75%, 85%, 95%{
-        transform: translate3d(-1px, 1px, 0);
-    }
-
-    40%, 60% {
-        transform: translate3d(1px, -1px, 0);
-    }
+    0% { transform: translate(2px, 2px) rotate(0deg); }
+    10% { transform: translate(-2px, -2px) rotate(0deg); }
+    20% { transform: translate(-2px, 2px) rotate(0deg); }
+    30% { transform: translate(2px, 2px) rotate(0deg); }
+    40% { transform: translate(2px, -2px) rotate(0deg); }
+    50% { transform: translate(-2px, 2px) rotate(0deg); }
+    60% { transform: translate(-2px, 2px) rotate(0deg); }
+    70% { transform: translate(2px, 2px) rotate(0deg); }
+    80% { transform: translate(-2px, -2px) rotate(0deg); }
+    90% { transform: translate(2px, 2px) rotate(0deg); }
+    100% { transform: translate(2px, -2px) rotate(0deg); }
   }
 </style>
