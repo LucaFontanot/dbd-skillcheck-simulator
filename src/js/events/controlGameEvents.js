@@ -117,11 +117,10 @@ const stopGame = () => {
             } else{
                 store.state.gameStatus.now.generatorStoped = true
             }     
-        }else{
-            removeSkillCheck();
         }
         stopButtonAnimation()
     }
+    removeSkillCheck();
 }
 
 // paused game status

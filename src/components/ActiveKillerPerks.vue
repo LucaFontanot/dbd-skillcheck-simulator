@@ -6,7 +6,7 @@
                 <div  style="position: relative;" class="killer-perk">
                     <div class="perk-content">
                       <img class="perks-icon" :src="require(`@/assets/perks/killer/${value.icon}.png`)" alt="">
-                      <div class="perks-tokens" v-for="opt in value.switches" :key="opt">
+                      <div class="perks-tokens" v-for="(opt, index) in value.switches" :key="index">
                                           <span v-if="opt.display">
 
                         <span v-if="opt.type == 'int'">
@@ -28,7 +28,7 @@
             <div  style="position: relative;" class="survivor-perk">
               <div class="perk-content">
                 <img class="perks-icon" :src="require(`@/assets/perks/survivor/${value.icon}.png`)" alt="">
-                <div class="perks-tokens c-surv" v-for="opt in value.switches" :key="opt">
+                <div class="perks-tokens c-surv" v-for="(opt, index) in value.switches" :key="index">
                   <span v-if="opt.display">
                     <span v-if="opt.type == 'int'">
                     {{opt.name}}: {{opt.val}}

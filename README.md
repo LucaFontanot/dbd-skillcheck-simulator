@@ -60,6 +60,11 @@ $ npm run serve
 Go to **localhost:8080** to play.
 ## Changelog
 
+### 0.1.5
+- Added new perk: Deadline
+- Fixed issue with skillcheck sometimes not removing on stop
+- Changed wiggle skillcheck to be more like the current one
+
 ### 0.1.4
 - Now audio files preload on page open, so there is no delay when triggering them
 

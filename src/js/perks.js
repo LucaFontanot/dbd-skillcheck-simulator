@@ -67,6 +67,12 @@ const perks = {
         }
     },
     survivor:{
+        deadline:{
+            mode: ["hard"],
+            name: "Deadline",
+            switches:[],
+            icon: 'deadline'
+        },
         thisIsNotHappening: {
             mode:["easy"],
             name:"This Is Not Happening",

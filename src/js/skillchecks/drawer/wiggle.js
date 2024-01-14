@@ -42,7 +42,7 @@ const drawWiggleSkillCheck = async (props) => {
     const rad = (deg) => {
         return (Math.PI / 180) * (deg-90)
     }
-    let zonegreat = 8;
+    let zonegreat = 14;
     let color = "#ffffff";
     if (store.state.gameStatus.now.wiggle.combo>0){
         color = "#f3da55";

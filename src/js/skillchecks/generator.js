@@ -43,7 +43,11 @@ const skillcheckGenerator = async (perkEffectActive={}) => {
                 ranEl.style.top = '50%'
                 ranEl.style.left = '50%'
             }
-
+            if (store.state.gameStatus.survivorPerks.deadline.active) {
+                let minSpace = (15 / 100) * window.innerHeight
+                ranEl.style.top = `${ffs.getRandomArbitraryRange(minSpace, window.innerHeight - 145 - minSpace)}px`
+                ranEl.style.left = `${ffs.getRandomArbitraryRange(minSpace, window.innerWidth - 145 - minSpace)}px`
+            }
             if (store.state.gameStatus.killerPerks.huntressLullaby.active) {
                 const huntressLullabyCurrentTokens = getSwitch(store.state.gameStatus.killerPerks.huntressLullaby, "tokens").val;
                 if (huntressLullabyCurrentTokens > 0 && huntressLullabyCurrentTokens < 5) {

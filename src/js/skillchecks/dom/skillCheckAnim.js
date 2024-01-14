@@ -115,9 +115,9 @@ const skillCheckInit = (a=false) => {
 }
 
 const removeSkillCheck = () => {
-    if (skillCheckAnimation.children.length >=3 && skillCheckAnimation.children[1].began) {
+    if (skillCheckAnimation.children.length >=3) {
         skillCheckAnimation.pause()
-        skillCheckAnimation.children[2].play()
+        skillCheckAnimation.children[skillCheckAnimation.children.length -1].play()
     } else {
         skillCheckAnimation.restart()
         skillCheckAnimation.pause()

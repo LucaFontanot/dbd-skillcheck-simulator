@@ -6,7 +6,9 @@ import {runGenerator} from '@/js/gamemode/generator/runGen.js'
 import store from '@/store/store'
 
 const damageGenerator = async (penalty) => {
-
+    if (store.state.gameStatus.survivorPerks.deadline.active) {
+        penalty = penalty * 0.5;
+    }
     store.state.gameStatus.now.charges -= penalty
     if (store.state.gameStatus.now.charges < 1) {
         store.state.gameStatus.now.charges = 0

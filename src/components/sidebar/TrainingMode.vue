@@ -6,7 +6,7 @@
             <div class="killer-perk-box" v-for="(value, perk, index) in killerPerks" :key='index'>
                 <img @click='changeKillerPerk(perk)' class="training-killer-perks" :src="require(`@/assets/perks/killer/${value.icon}.png`)" alt="">
                 <h2>{{ value.active ? 'ON': 'OFF' }}</h2>
-                <div v-for="sw in value.switches" :key="sw">
+                <div v-for="(sw, index) in value.switches" :key="index">
                   <hr>
                   <span class="text-option">{{sw.name}}</span><br><input v-if="sw.type == 'int'" class="perk-option"
                          @input="set_value_killer(perk,sw.attr)"
@@ -25,7 +25,7 @@
         <div class="killer-perk-box" v-for="(value, perk, index) in survivorPerks" :key='index'>
           <img @click='changeSurvPerk(perk)'  class="training-killer-perks" :src="require(`@/assets/perks/survivor/${value.icon}.png`)" alt="">
           <h2>{{ value.active ? 'ON': 'OFF' }}</h2>
-          <div v-for="sw in value.switches" :key="sw">
+          <div v-for="(sw, index) in value.switches" :key="index">
             <hr>
             <span class="text-option">{{sw.name}}</span><br><input v-if="sw.type == 'int'" class="perk-option"
                                                                    @input="set_value_surv(perk,sw.attr)"
