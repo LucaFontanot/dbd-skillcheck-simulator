@@ -1,168 +1,153 @@
 <template>
-  <div oncontextmenu="return false;" id="app">
-    <div class="background">
-      <img fetchpriority="high" src="./assets/backgrounds/bg-hero.webp" class="backgroundimg blur">
-      <img fetchpriority="low" :src="image" class="backgroundimg">
-    </div>
-    <Skillcheck/>
-    <GeneralStats/>
-    <Generator/>
-    <Combo/>
-    <ObjectivePoints/>
-    <Sidebar/>
-    <Noise/>
-    <!-- <Particles/> -->
-    <UserInteractionButtons/>
-    <Notifications/>
-    <Rank/>
-    <ActiveKillerPerks/>
-    <LeftBottom/>
-  </div>
+  <v-app>
+    <v-alert type="info" class="infobanner">V2 is still under development, some features may not work as expected and/or be missing. Please share any feedbacks <a href="https://github.com/LucaFontanot/dbd-skillcheck-simulator/issues">on github</a> by opening an issue</v-alert>
+
+    <v-app-bar
+      class="mobile"
+      prominent
+      style="z-index: 106"
+    >
+      <v-app-bar-nav-icon variant="text" @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
+
+      <v-toolbar-title>Skill Check Trainer</v-toolbar-title>
+
+    </v-app-bar>
+    <v-navigation-drawer
+      v-model="drawer"
+      style="top: 0; height: 100%"
+    >
+      <v-list density="compact" nav>
+        <v-list-item prepend-icon="mdi-account-circle-outline" title="Account"></v-list-item>
+      </v-list>
+      <v-divider></v-divider>
+      <v-list>
+        <v-list-item
+          to="/"
+          title="Custom mode"
+        >
+          <template v-slot:prepend>
+            <img src="@/assets/icons/generator.png" width="24px" style="margin-right: 32px"/>
+          </template>
+        </v-list-item>
+        <v-list-item
+          title="Decisive Strike"
+          to="/ds"
+        >
+          <template v-slot:prepend>
+            <img src="@/assets/icons/decisiveStrike.png" width="24px" style="margin-right: 32px"/>
+          </template>
+        </v-list-item>
+        <v-list-item
+          title="Glyph"
+        >
+          <template v-slot:prepend>
+            <img src="@/assets/icons/glyph.png" width="24px" style="margin-right: 32px"/>
+          </template>
+        </v-list-item>
+        <v-list-item
+          title="Wiggle"
+        >
+          <template v-slot:prepend>
+            <img src="@/assets/icons/wiggle.png" width="24px" style="margin-right: 32px"/>
+          </template>
+        </v-list-item>
+      </v-list>
+
+      <v-divider></v-divider>
+
+      <v-list density="compact" nav>
+        <v-list-item prepend-icon="mdi-tune" title="Modifiers" to="/modifiers"></v-list-item>
+        <v-list-item prepend-icon="mdi-chart-line" title="Your stats"></v-list-item>
+        <v-list-item prepend-icon="mdi-cog" title="Settings" to="/settings"></v-list-item>
+        <v-list-item prepend-icon="mdi-information-outline" title="Privacy & Terms And Condition"></v-list-item>
+        <v-list-item prepend-icon="mdi-skip-backward-outline" title="Old version" v-on:click="old"></v-list-item>
+
+      </v-list>
+    </v-navigation-drawer>
+    <v-main>
+      <router-view/>
+    </v-main>
+  </v-app>
 </template>
 
-<script>
-import Skillcheck from './components/Skillcheck.vue'
-import GeneralStats from './components/GeneralStats.vue'
-import Generator from './components/Generator.vue'
-import Combo from './components/Combo.vue'
-import ObjectivePoints from './components/ObjectivePoints.vue'
-import Noise from './components/Noise.vue'
-import UserInteractionButtons from './components/UserInteractionButtons.vue'
-import Notifications from './components/Notifications.vue'
-import Rank from './components/Rank.vue'
-import LeftBottom from './components/LeftBottom.vue'
+<script lang="ts" setup>
 
-import Sidebar from './views/Sidebar.vue'
-import ActiveKillerPerks from './components/ActiveKillerPerks.vue'
+import {onMounted, ref, watch} from "vue";
+import {controllerInit} from "./plugins/controller";
+import GameState from "./plugins/store/gameState";
 
+const drawer = ref(true);
 
-// import {playerOptions} from '@/js/status/options.js'
+function old() {
+  window.location.href = 'https://dbd.lucaservers.com'
+}
 
-// eslint-disable-next-line no-unused-vars
-import * as events from '@/js/events/keyboardEvents.js'
-// eslint-disable-next-line no-unused-vars
-import * as controllerEvents from '@/js/events/controllerEvent.js'
+function load() {
+  if (GameState.pinia === null) {
+    return setTimeout(load, 100);
+  }
+  const state = GameState.getState();
+  document.oncontextmenu = document.body.oncontextmenu = function () {
+    if (state.settings.mouse) {
+      document.dispatchEvent(new Event('skillchedkClick'));
+    }
+    return false;
+  }
+  window.addEventListener("wheel", (e) => {
+    if (state.settings.wheel) {
+      document.dispatchEvent(new Event('skillchedkClick'));
+    }
+  })
+  window.addEventListener('mousedown', (e) => {
+    if (state.settings.mouse) {
+      document.dispatchEvent(new Event('skillchedkClick'));
+    }
+  })
+  window.addEventListener('keydown', (e) => {
+    if (state.settings.keyboard.startKey === e.code && (state.playStatus === 'stop' || state.playStatus === 'pause')) {
+      state.playStatus = 'start';
+    } else if (state.settings.keyboard.stopKey === e.code && (state.playStatus === 'start' || state.playStatus === 'pause')) {
+      state.playStatus = 'stop';
+    }
+    if (state.settings.keyboard.keys.includes(e.code)) {
+      document.dispatchEvent(new Event('skillchedkClick'));
+    }
+  })
+  if (state.settings.specialMouse) {
+    history.pushState(null, null, location.href)
+    window.onpopstate = function () {
+      history.go(1)
+    }
+  } else {
+    window.onpopstate = function () {
 
+    }
+  }
+  controllerInit()
+}
 
-export default {
-  name: 'app',
-  components: {
-    Skillcheck,
-    GeneralStats,
-    Generator,
-    Combo,
-    Sidebar,
-    ObjectivePoints,
-    Noise,
-    UserInteractionButtons,
-    Notifications,
-    Rank,
-    ActiveKillerPerks,
-    LeftBottom
-  },
-  computed: {
-      image(){
-          return this.$store.state.playerSettings.backgroundURL
-      }
+onMounted(() => {
+  load()
+})
+</script>
+<style scoped>
+@media only screen and (max-width: 1280px) {
+  .mobile {
+    display: block !important;
   }
 }
-</script>
 
-<style>
-
-body{
-    background-color: #020202;
-    font-family: 'Roboto', sans-serif;
-    color: white;
-    padding: 1rem 1.4rem;
+.mobile {
+  display: none;
 }
-
-*{
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-:root{
-    font-size: 0.58vw;
-    --circle-height: 145px;
-    --circle-width: 145px;
-    --skillcheck-bar-width: 14px;
-    --skillcheck-bar-height: 100px;
-    --skillcheck-bar-gradient: radial-gradient(#ff0000, hsla(0, 70%, 5%, 0.00), rgba(0, 0, 0, 0));
-    --skillcheck-button-padding: .1rem .6rem;
-    --skillcheck-button-borderRadius: 4px;
-    --skillcheck-button-border: 1.5px solid #ffffff;
-    --skillcheck-button-color: #ffffff;
-    --general-stats-color: #ffffff;
-    --font-color-one: #3f3f3f;
-    --font-color-two: rgba(152, 152, 152, 0.43);
-}
-
-.background{
-    background: no-repeat center top fixed;
-    position: fixed;
-    top: 0;
-    left: 0;
-    background-size: 100%;
-    width: 100vw;
-    height: 100vh;
-    z-index: -1;
-}
-
-.backgroundimg{
-  position: absolute;
-  width: 100vw;
-  height: auto;
-}
-
-.blur{
-  filter: blur(8px);
-  -webkit-filter: blur(8px);
-}
-
-.popper{
-    background: #383838;
-    border: none;
-    padding: 0.4rem;
-    box-shadow: none;
-    margin: 0px 4rem;
-}
-
-.p-item-name{
-    text-align: start;
-    font-size: 1.4vw;
-    color: #ffffff;
-    padding: .2rem 2rem; 
-    background: #9593f5;
-    width: 100%;
-}
-
-.p-item-true{
-    color: #6EF37B;
-}
-
-.p-item-false{
-    color: #FF4D4D;
-}
-
-.p-item-description{
-    font-size: 1vw;
-    color: rgb(168, 102, 255);
-    text-align: start;
-}
-
-.p-item-status{
-    margin: 1vw;
-    color: white;
-    text-align: start;
-    font-size: 1vw;
-    padding-left: 2rem;
-    list-style-type: circle;
-}
-
-.p-item-note{
-    font-size: 1vw;
-    color: #e3d1b6;
+.infobanner {
+  position: fixed;
+  height: 100px;
+  max-width: 700px;
+  top: 0;
+  left: 50%;
+  transform: translate(-50%, 0);
+  z-index: 100;
+  opacity: 0.5;
 }
 </style>
