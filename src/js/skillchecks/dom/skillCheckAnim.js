@@ -8,6 +8,7 @@ let skillCheckAnimation = window.skillCheckAnimation;
 
 const skillCheckInit = (a=false) => {
     var props=store.state.gameStatus.now.props ;
+    dom.skillcheck['skill-check-element'].style.display = 'block'
 
     //document.getElementsByClassName("skillcheck-center")[0].style.transform="";
     skillCheckAnimation = anime.timeline({
@@ -122,6 +123,9 @@ const removeSkillCheck = () => {
         skillCheckAnimation.restart()
         skillCheckAnimation.pause()
     }
+    setTimeout(function (){
+        dom.skillcheck['skill-check-element'].style.display = 'none'
+    },500)
 }
 
 export {removeSkillCheck, skillCheckAnimation, skillCheckInit}

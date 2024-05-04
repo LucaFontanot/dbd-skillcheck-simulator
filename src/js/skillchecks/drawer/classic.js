@@ -129,6 +129,7 @@ const drawClassicSkillCheck = async (props) => {
     context.lineWidth = sSize * 2 + 1
     context.strokeStyle = props.color
     context.stroke()
+    dom.skillcheck['skill-check-element'].style.display = 'block'
     dom.callbackComplete = props.callbackComplete;
     skillCheckAnimation.restart()
 

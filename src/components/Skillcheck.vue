@@ -47,9 +47,13 @@
     mounted() {
       this.$nextTick(() => {
         initDom('skillcheck', this.$refs)
+
+        console.log(document.querySelector('.skillcheck-center').toDataURL())
       })
     }
   }
+  //skill-check-needle to png base64
+
 </script>
 
 <style scoped>

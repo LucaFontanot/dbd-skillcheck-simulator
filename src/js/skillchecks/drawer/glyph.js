@@ -124,6 +124,7 @@ const drawGlyphSkillCheck = async (props) => {
         dom.callbackComplete = props.callbackComplete;
         skillCheckAnimation.restart()
     }
+    dom.skillcheck['skill-check-element'].style.display = 'block'
 
 }
 

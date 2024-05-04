@@ -225,6 +225,7 @@ const drawWiggleSkillCheck = async (props) => {
     context.strokeStyle = color
     context.stroke()
     if (firstart){
+        dom.skillcheck['skill-check-element'].style.display = 'block'
         dom.callbackComplete = props.callbackComplete;
         skillCheckAnimation.restart()
     }else{

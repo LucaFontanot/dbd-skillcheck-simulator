@@ -86,8 +86,6 @@ window.addEventListener("gamepadconnected", (e) => {
     }else{
         addgamepad(e.gamepad,PSC)
     }
-
-
 });
 
 window.addEventListener("gamepaddisconnected", (e) => {
