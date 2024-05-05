@@ -22,7 +22,9 @@ class GameState {
       advertise: string;
       advertisetime: number;
       dstime: number;
-      v: number;
+      v: number
+      gliphbasesize: number;
+      glyphduration: number;
     };
     perks: {};
     effects: {};
@@ -113,6 +115,9 @@ class GameState {
         hyperfocus: {
           active: false,
           tokens: 0
+        },
+        mercilessStorm: {
+          active: false,
         }
       },
       settings:{

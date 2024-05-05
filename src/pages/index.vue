@@ -26,7 +26,7 @@ const tickTime = ref(500);
 const pauseTicks = ref(0);
 const ticks = ref(0);
 const nextSkillCheck = ref(1000);
-
+let d = null;
 async function getAudio(name: string): Promise<HTMLAudioElement> {
   // eslint-disable-next-line no-async-promise-executor
   return new Promise(async (resolve, reject) => {
@@ -63,9 +63,13 @@ function tick() {
     if (ticks.value >= maxTicks.value) {
       return endGame();
     }
+    //if 90%
+    if (ticks.value >= maxTicks.value * 0.9) {
+      //todo
+
+    }
     if (nextSkillCheck.value <= 0) {
       nextSkillCheck.value = 5000;
-      let d = new Skillcheck(skillCheck.value);
       d.drawGeneratorSkillcheck({
         greatSize: 10,
         goodSize: 50,
@@ -132,6 +136,7 @@ function startGame() {
   state.value.playStatus = 'start';
   ticks.value = 0;
   nextSkillCheck.value = 1000;
+  d = new Skillcheck(skillCheck.value);
   tick();
 }
 

@@ -108,16 +108,6 @@ onMounted(() => {
   z-index: 1000;
 }
 
-.progress {
-  position: fixed;
-  bottom: 80px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 100%;
-  max-width: 400px;
-  z-index: 1000;
-}
-
 .hidden {
   visibility: hidden;
   opacity: 0;

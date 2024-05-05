@@ -39,6 +39,7 @@
         </v-list-item>
         <v-list-item
           title="Glyph"
+          to="/gliph"
         >
           <template v-slot:prepend>
             <img src="@/assets/icons/glyph.png" width="24px" style="margin-right: 32px"/>
@@ -98,20 +99,40 @@ function load() {
       document.dispatchEvent(new Event('skillchedkClick'));
     }
   })
+  let isDown = false;
   window.addEventListener('mousedown', (e) => {
-    if (state.settings.mouse) {
+    if (state.settings.mouse && !isDown) {
       document.dispatchEvent(new Event('skillchedkClick'));
+      isDown = true;
     }
   })
+  window.addEventListener('mouseup', (e) => {
+    isDown = false;
+  })
+  let isTouchDown = false;
+  window.addEventListener("touchstart", (e) => {
+    if (state.settings.click && !isTouchDown) {
+      document.dispatchEvent(new Event('skillchedkClick'));
+      isTouchDown = true;
+    }
+  })
+  window.addEventListener("touchend", (e) => {
+    isTouchDown = false;
+  })
+  let isKeyDown = false;
   window.addEventListener('keydown', (e) => {
     if (state.settings.keyboard.startKey === e.code && (state.playStatus === 'stop' || state.playStatus === 'pause')) {
       state.playStatus = 'start';
     } else if (state.settings.keyboard.stopKey === e.code && (state.playStatus === 'start' || state.playStatus === 'pause')) {
       state.playStatus = 'stop';
     }
-    if (state.settings.keyboard.keys.includes(e.code)) {
+    if (state.settings.keyboard.keys.includes(e.code) && !isKeyDown) {
       document.dispatchEvent(new Event('skillchedkClick'));
+      isKeyDown = true;
     }
+  })
+  window.addEventListener('keyup', (e) => {
+    isKeyDown = false;
   })
   if (state.settings.specialMouse) {
     history.pushState(null, null, location.href)

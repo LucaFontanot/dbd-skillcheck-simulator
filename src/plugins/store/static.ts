@@ -49,6 +49,13 @@ const Static = {
         "    Decreases the Success zone of Skill Checks by 40/50/60 %.",
       tierRange: [1, 2, 3],
     },
+    mercilessStorm:{
+      prop: "mercilessStorm",
+      name: "Merciless Storm",
+      type: "debuff",
+      icon: '/src/assets/perks/killer/mercilessStorm.webp',
+      tip:"Whenever a Generator is repaired to 90 %, Survivors repairing it are faced with continuous Skill Checks."
+    },
     deadline: {
       prop: "deadline",
       name: "Deadline",
@@ -118,6 +125,8 @@ const Static = {
     frequency: 7000,
     dstime:3000,
     advertisetime: 500,
+    glyphduration: 5000,
+    gliphbasesize: 35,
     speed: 1,
     advertise:"advertise_02",
     v: 1
