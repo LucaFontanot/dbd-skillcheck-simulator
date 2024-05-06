@@ -16,7 +16,12 @@
 import {onMounted, ref} from "vue";
 import Skillcheck from "@/plugins/drawer/skillcheck";
 import GameState from "../plugins/store/gameState";
-import {addGenerator} from "../plugins/store/statsManager";
+import {
+  addGenerator,
+  addGeneratorSkillCheckFail,
+  addGeneratorSkillCheckGood,
+  addGeneratorSkillCheckGreat, addGeneratorTime
+} from "../plugins/store/statsManager";
 import Assets from "../plugins/drawer/assets";
 
 let skillCheck = ref(null);
@@ -44,14 +49,20 @@ async function endGame() {
   gen.play();
   ticks.value = 0;
   nextSkillCheck.value = 1000;
-  addGenerator();
+  if (hasGlyphStarted){
+    d.animate = false;
+    d.setDisplay(false);
+    hasGlyphStarted = false;
+  }
+  addGenerator(state.value.perks,state.value.effects);
+  addGeneratorTime(maxTicks.value);
   tick();
 }
 
 function randomIntInterval(min: number, max: number) {
   return Math.floor(Math.random() * (max - min + 1) + min);
 }
-
+let hasGlyphStarted = false;
 function tick() {
   if (state.value.playStatus === 'start') {
     if (pauseTicks.value > 0) {
@@ -64,12 +75,55 @@ function tick() {
       return endGame();
     }
     //if 90%
-    if (ticks.value >= maxTicks.value * 0.9) {
-      //todo
-
+    console.log(ticks.value, maxTicks.value * 0.9, hasGlyphStarted)
+    if (ticks.value >= maxTicks.value * 0.9 && !hasGlyphStarted) {
+      d.animate=false;
+      hasGlyphStarted = true;
+      d = new Skillcheck(skillCheck.value);
+      let startTime = Date.now() - state.value.modifiers.advertisetime;
+      nextSkillCheck.value = 50000;
+      d.drawGliphSkillcheck({
+        effects: null,
+        perks: {},
+        autoApplyModifiers: true,
+        autoApplyPerks: false,
+      })
+      let onSuccess=(status: string, angle: number) => {
+        d.playStatusSound(status);
+        if (status === "fail") {
+          getAudio('generator_explode').then((audio) => {
+            audio.volume = state.value.settings.surround / 100;
+            audio.play();
+          });
+          d.shake(300);
+          ticks.value = Math.max(1, ticks.value - 10000);
+          pauseTicks.value = 2000;
+          d.animate = false;
+          d.setDisplay(false);
+          nextSkillCheck.value = randomIntInterval(500, state.value.modifiers.frequency);
+        } else if (status === "good") {
+          d.drawGliphSkillcheck({
+            effects: null,
+            perks: {},
+            autoApplyModifiers: true,
+            autoApplyPerks: false,
+          },angle)
+          d.animateGliph({
+            onSuccess: onSuccess,
+            startTime: Date.now(),
+            startPos:angle+90
+          });
+        }
+      }
+      d.animateGliph({
+        onSuccess: onSuccess,
+        startTime: startTime,
+        startPos:0
+      });
     }
     if (nextSkillCheck.value <= 0) {
       nextSkillCheck.value = 5000;
+      d= new Skillcheck(skillCheck.value);
       d.drawGeneratorSkillcheck({
         greatSize: 10,
         goodSize: 50,
@@ -85,6 +139,7 @@ function tick() {
           nextSkillCheck.value = randomIntInterval(500, state.value.modifiers.frequency);
           d.playStatusSound(status);
           if (status === "fail") {
+            addGeneratorSkillCheckFail(state.value.perks,state.value.effects);
             getAudio('generator_explode').then((audio) => {
               audio.volume = state.value.settings.surround / 100;
               audio.play();
@@ -100,6 +155,7 @@ function tick() {
               state.value.perks.hyperfocus.tokens=0;
             }
           } else if (status === "great") {
+            addGeneratorSkillCheckGreat(state.value.perks,state.value.effects);
             let increase = 1000;
             console.log(state.value.perks.hyperfocus.active, state.value.perks.hyperfocus.tokens)
             if (state.value.perks.hyperfocus.active && state.value.perks.hyperfocus.tokens>0) {
@@ -113,6 +169,7 @@ function tick() {
             }
             ticks.value+=increase;
           } else if (status === "good") {
+            addGeneratorSkillCheckGood(state.value.perks,state.value.effects);
             if (state.value.perks.ruin.active){
               ticks.value-= (ticks.value)*((2+state.value.perks.ruin.tier)/100);
               pauseTicks.value = 600;
@@ -135,6 +192,7 @@ function tick() {
 function startGame() {
   state.value.playStatus = 'start';
   ticks.value = 0;
+  hasGlyphStarted = false;
   nextSkillCheck.value = 1000;
   d = new Skillcheck(skillCheck.value);
   tick();

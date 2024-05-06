@@ -14,7 +14,57 @@ class GameState {
       click: boolean;
       surround: number
     };
-    stats: {};
+    stats: {
+      generators: number;
+      generatorsDay: {};
+      generatorsTime: number;
+      generatorsTimeDay: {};
+      generatorGoodSkillChecks: number;
+      generatorGreatSkillChecks: number;
+      generatorSkillCheckFails: number;
+      generatorGoodSkillChecksDay: {};
+      generatorGreatSkillChecksDay: {};
+      generatorSkillCheckFailsDay: {};
+      generatorsWithPerks: {};
+      generatorsWithPerksDay: {};
+      generatorsWithEffects: {};
+      generatorsWithEffectsDay: {};
+      generatorGoodSkillChecksPerks: {};
+      generatorGreatSkillChecksPerks: {};
+      generatorSkillCheckFailsPerks: {};
+      generatorGoodSkillChecksEffects: {};
+      generatorGreatSkillChecksEffects: {};
+      generatorSkillCheckFailsEffects: {};
+      generatorGoodSkillChecksPerksDay: {};
+      generatorGreatSkillChecksPerksDay: {};
+      generatorSkillCheckFailsPerksDay: {};
+      generatorGoodSkillChecksEffectsDay: {};
+      generatorGreatSkillChecksEffectsDay: {};
+      generatorSkillCheckFailsEffectsDay: {};
+
+      ds: number;
+      dsDay: {};
+      dsEffects: {};
+      dsDayEffects: {};
+      dsFail: number;
+      dsFailDay: {};
+      dsFailEffects: {};
+      dsFailDayEffects: {};
+
+      gliph: number;
+      gliphDay: {};
+      gliphEffects: {};
+      gliphDayEffects: {};
+      gliphFail: number;
+      gliphFailDay: {};
+      gliphSuccess: number;
+      gliphSuccessDay: {};
+      gliphSuccessEffects: {};
+      gliphSuccessDayEffects: {};
+      gliphFailEffects: {};
+      gliphFailDayEffects: {};
+
+    };
     modifiers: {
       frequency: number;
       speed: number;
@@ -28,7 +78,6 @@ class GameState {
     };
     perks: {};
     effects: {};
-    statslog: {};
     currentMode: string,
     playStatus: string,
   };
@@ -36,6 +85,7 @@ class GameState {
 
   updateObjProps(obj: any, props: any) {
     for (const key in props) {
+      if (typeof obj[key] === "undefined") continue;
       if (typeof props[key] === "object" && !Array.isArray(props[key])) {
         this.updateObjProps(obj[key], props[key]);
         continue;
@@ -65,10 +115,59 @@ class GameState {
   }
   constructor() {
     this.gameState = {
-      stats: {},
+      stats: {
+        generators: 0,
+        generatorsTime: 0,
+        generatorsDay: {},
+        generatorsTimeDay: {},
+        generatorGoodSkillChecks: 0,
+        generatorGreatSkillChecks: 0,
+        generatorSkillCheckFails: 0,
+        generatorGoodSkillChecksDay: {},
+        generatorGreatSkillChecksDay: {},
+        generatorSkillCheckFailsDay: {},
+        generatorsWithPerks: {},
+        generatorsWithPerksDay: {},
+        generatorsWithEffects: {},
+        generatorsWithEffectsDay: {},
+        generatorGoodSkillChecksPerks: {},
+        generatorGreatSkillChecksPerks: {},
+        generatorSkillCheckFailsPerks: {},
+        generatorGoodSkillChecksEffects: {},
+        generatorGreatSkillChecksEffects: {},
+        generatorSkillCheckFailsEffects: {},
+        generatorGoodSkillChecksPerksDay: {},
+        generatorGreatSkillChecksPerksDay: {},
+        generatorSkillCheckFailsPerksDay: {},
+        generatorGoodSkillChecksEffectsDay: {},
+        generatorGreatSkillChecksEffectsDay: {},
+        generatorSkillCheckFailsEffectsDay: {},
+
+        ds: 0,
+        dsDay: {},
+        dsEffects: {},
+        dsDayEffects: {},
+        dsFail: 0,
+        dsFailDay: {},
+        dsFailEffects: {},
+        dsFailDayEffects: {},
+
+        gliph: 0,
+        gliphDay: {},
+        gliphEffects: {},
+        gliphDayEffects: {},
+        gliphFail: 0,
+        gliphFailDay: {},
+        gliphSuccess: 0,
+        gliphSuccessDay: {},
+        gliphSuccessEffects: {},
+        gliphSuccessDayEffects: {},
+        gliphFailEffects: {},
+        gliphFailDayEffects: {},
+
+      },
       currentMode: "generator",
       playStatus: "stop",
-      statslog: {},
       modifiers: JSON.parse(JSON.stringify(this.getStatics().modifiers)),
       effects:{
         madness: {

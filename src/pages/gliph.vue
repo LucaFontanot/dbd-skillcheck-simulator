@@ -3,6 +3,7 @@ import {onMounted, ref} from "vue";
 import GameState from "../plugins/store/gameState";
 import Skillcheck from "../plugins/drawer/skillcheck";
 import Assets from "../plugins/drawer/assets";
+import {addGlyph, addGlyphFail, addGlyphSuccess} from "../plugins/store/statsManager";
 
 let state: any = ref({});
 let skillCheck = ref(null);
@@ -32,6 +33,7 @@ function tick() {
     ticks.value += tickTime.value;
     if (ticks.value >= maxTicks.value) {
       stopGame();
+      addGlyph(state.value.effects)
       setTimeout(() => {
         startGame();
       }, 2000);
@@ -60,6 +62,7 @@ function startGame() {
   let onSuccess=(status: string, angle: number) => {
     d.playStatusSound(status);
     if (status === "fail") {
+      addGlyphFail(state.value.effects);
       getAudio('skillcheck_fail').then((audio) => {
         audio.volume = state.value.settings.surround / 100;
         audio.play();
@@ -68,6 +71,7 @@ function startGame() {
       d.sleep(200);
       return stopGame()
     } else if (status === "good") {
+      addGlyphSuccess(state.value.effects);
       d.drawGliphSkillcheck({
         effects: null,
         perks: {},

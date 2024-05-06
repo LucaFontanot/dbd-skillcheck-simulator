@@ -13,6 +13,7 @@ import {onMounted, ref} from "vue";
 import Skillcheck from "@/plugins/drawer/skillcheck";
 import GameState from "../plugins/store/gameState";
 import Assets from "../plugins/drawer/assets";
+import {addDs, addDsFail} from "../plugins/store/statsManager";
 
 let skillCheck = ref(null);
 let state: any = ref({});
@@ -56,12 +57,14 @@ function tick() {
           nextSkillCheck.value = state.value.modifiers.dstime;
           d.playStatusSound(status);
           if (status === "fail") {
+            addDsFail(state.value.effects)
             getAudio('skillcheck_fail').then((audio) => {
               audio.volume = state.value.settings.surround / 100;
               audio.play();
             });
             d.shake(300);
           } else if (status === "great") {
+            addDs(state.value.effects)
 
           }
         },
