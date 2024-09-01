@@ -23,5 +23,6 @@ declare module 'vue-router/auto-routes' {
     '/gliph': RouteRecordInfo<'/gliph', '/gliph', Record<never, never>, Record<never, never>>,
     '/modifiers': RouteRecordInfo<'/modifiers', '/modifiers', Record<never, never>, Record<never, never>>,
     '/settings': RouteRecordInfo<'/settings', '/settings', Record<never, never>, Record<never, never>>,
+    '/wiggle': RouteRecordInfo<'/wiggle', '/wiggle', Record<never, never>, Record<never, never>>,
   }
 }

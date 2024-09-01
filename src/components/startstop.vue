@@ -14,10 +14,10 @@ const model = defineModel()
       <v-btn variant="outlined" @click="onStart" prepend-icon="mdi-play" class="ma-3" v-if="model==='stop' || model===''">
         START
       </v-btn>
-      <v-btn variant="outlined" @click="onStop" prepend-icon="mdi-stop" class="ma-3" v-if="model==='start' || model==='pause'">
+      <v-btn variant="outlined" @click="onStop" prepend-icon="mdi-stop" class="ma-3" v-if="model==='start' || model==='pause' || model==='softStop'">
         STOP
       </v-btn>
-      <v-btn variant="outlined" @click="onPause" prepend-icon="mdi-pause" class="ma-3" v-if="model==='start'">
+      <v-btn variant="outlined" @click="onPause" prepend-icon="mdi-pause" class="ma-3" v-if="model==='start' || model==='softStop'">
         PAUSE
       </v-btn>
       <v-btn variant="outlined" @click="onResume" prepend-icon="mdi-play" class="ma-3" v-if="model==='pause'">

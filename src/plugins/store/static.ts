@@ -3,7 +3,7 @@ const Static = {
     lullaby: {
       prop: "lullaby",
       name: "Hex: Huntress Lullaby",
-      icon: '/src/assets/perks/killer/huntressLullaby.png',
+      icon: './assets/perks/killer/huntressLullaby.png',
       tip: "Each time a Survivor is hooked, Hex: Huntress Lullaby grows in power and gains 1 Token, up to a maximum of 5 Tokens.\nEach Token reduces the timer between the Skill Check Warning cue and the Skill Check appearing for both Repair and Healing Skill Checks:\n" +
         "    1 Token: reduction of -14 %.\n" +
         "    2 Tokens: reduction of -28 %.\n" +
@@ -17,7 +17,7 @@ const Static = {
       prop: "oppression",
       type: "debuff",
       name: "Oppression",
-      icon: '/src/assets/perks/killer/oppression.png',
+      icon: './assets/perks/killer/oppression.png',
       tip: "Performing the Damage Generator Action on a generator activates Oppression:\n" +
         "    Causes up to 3 additional Generators to also start regressing.\n" +
         "    Triggers a difficult SkillCheck on all Survivors currently repairing one of those Generators.",
@@ -26,7 +26,7 @@ const Static = {
       prop: "ruin",
       name: "[OLD] Hex: Ruin",
       type: "debuff",
-      icon: '/src/assets/perks/killer/hexRuin.png',
+      icon: './assets/perks/killer/hexRuin.png',
       tip: "All Survivors are affected by Hex: Ruin, which causes the following:\n" +
         "    Good Skill Checks result in 3/4/5 % regression on the Generator.\n" +
         "    Great Skill Checks grant 0 % bonus progression on the Generator.",
@@ -36,14 +36,14 @@ const Static = {
       prop: "coulrophobia",
       name: "Coulrophobia",
       type: "debuff",
-      icon: '/src/assets/perks/killer/coulrophobia.png',
+      icon: './assets/perks/killer/coulrophobia.png',
       tip: "Increases the Rotation speed of Healing SkillChecks by +50 %",
     },
     unnervingPresence: {
       prop: "unnervingPresence",
       name: "HEX: Unnerving Presence",
       type: "debuff",
-      icon: '/src/assets/perks/killer/unnervingPresence.png',
+      icon: './assets/perks/killer/unnervingPresence.png',
       tip: "Survivors repairing or healing within your Terror Radius suffer from the following effects:\n" +
         "    Increases the Trigger odds of Skill Check by 10 %.\n" +
         "    Decreases the Success zone of Skill Checks by 40/50/60 %.",
@@ -53,14 +53,14 @@ const Static = {
       prop: "mercilessStorm",
       name: "Merciless Storm",
       type: "debuff",
-      icon: '/src/assets/perks/killer/mercilessStorm.webp',
+      icon: './assets/perks/killer/mercilessStorm.webp',
       tip:"Whenever a Generator is repaired to 90 %, Survivors repairing it are faced with continuous Skill Checks."
     },
     deadline: {
       prop: "deadline",
       name: "Deadline",
       type: "buff",
-      icon: '/src/assets/perks/survivor/deadline.png',
+      icon: './assets/perks/survivor/deadline.png',
       tip: "Increases the Odds of triggering Skill Checks by 6/8/10 % while repairing or healing.\n" +
         "        Causes Skill Checks to appear in random places.\n" +
         "    Reduces the penalty for missed Skill Checks by -50 %.",
@@ -69,14 +69,14 @@ const Static = {
       prop: "thisisnothappening",
       name: "This is not happening",
       type: "buff",
-      icon: '/src/assets/perks/survivor/thisIsNotHappening.png',
+      icon: './assets/perks/survivor/thisIsNotHappening.png',
       tip: "Increases the Success zone of Great Skill Checks while Repairing",
     },
     stakeout:{
       prop: "stakeout",
       name: "Stake Out",
       type: "buff",
-      icon: '/src/assets/perks/survivor/stakeOut.png',
+      icon: './assets/perks/survivor/stakeOut.png',
       tip: "Stake Out gains 1 Token, up to a maximum of 2/3/4 Tokens.\n" +
         "    When Stake Out has at least 1 Token, Good Skill Checks consume 1 Token and are considered Great Skill Checks, granting an additional Progression bonus of +1 %.",
       tokenRange: [1, 2, 3, 4],
@@ -85,7 +85,7 @@ const Static = {
       prop: "fasttrack",
       name: "Fast Track",
       type: "buff",
-      icon: '/src/assets/perks/survivor/fastTrack.png',
+      icon: './assets/perks/survivor/fastTrack.png',
       tip: "Whenever another Survivor is hooked, Fast Track gains 1/2/3 Tokens, up to a maximum of 9/18/27 Token(s).\n" +
         "    You consume all accumulated Tokens after a Great Skill Check on a Generator.\n" +
         "    Each Token grants a stack-able 1 % Progression bonus in addition to the default Progression bonus for succeeding a Great Skill Check.",
@@ -95,7 +95,7 @@ const Static = {
       prop: "hyperfocus",
       name: "Hyper Focus",
       type: "buff",
-      icon: '/src/assets/perks/survivor/hyperfocus.png',
+      icon: './assets/perks/survivor/hyperfocus.png',
       tip: "After hitting a Great Skill Check while repairing or healing, Hyperfocus gains +1 Token, up to a maximum of 6 Tokens\n" +
         "For each Token, the following stack-able effects are applied:\n" +
         "    Increases the Skill Check Trigger odds by +4 % per Token.\n" +
@@ -108,14 +108,14 @@ const Static = {
       prop: "madness",
       name: "Madness",
       type: "debuff",
-      icon: "/src/assets/icons/madness.webp",
+      icon: "./assets/icons/madness.webp",
       tip: "Madness is a Status Effect in Dead by Daylight which affects Survivors by giving them the Madness Skill Check. \nThe Madness Skill Check is a Skill Check that appears randomly on the screen, occasionally going counter clockwise and usually with a shaking effect.",
     },
     correctiveaction:{
       prop: "correctiveaction",
       name: "Corrective Action",
       type: "buff",
-      icon: "/src/assets/perks/survivor/correctiveAction.webp",
+      icon: "./assets/perks/survivor/correctiveAction.webp",
       tip: "You start the Trial with 3 Tokens on Corrective Action and gain +1 Token each time you succeed at a Great Skill Check, up to a maximum of 5 Tokens.\n" +
         "    Each time another Survivor cooperating with you fails a Skill Check, Corrective Action consumes -1 Token, transforming their Failed Skill Check into Good Skill Check instead.",
     },

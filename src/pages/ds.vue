@@ -65,7 +65,6 @@ function tick() {
             d.shake(300);
           } else if (status === "great") {
             addDs(state.value.effects)
-
           }
         },
       });

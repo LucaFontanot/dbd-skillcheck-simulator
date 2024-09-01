@@ -11,6 +11,7 @@ const maxTicks = ref(1000);
 const tickTime = ref(500);
 const ticks = ref(0);
 let d = null;
+
 async function getAudio(name: string): Promise<HTMLAudioElement> {
   // eslint-disable-next-line no-async-promise-executor
   return new Promise(async (resolve, reject) => {
@@ -21,78 +22,91 @@ async function getAudio(name: string): Promise<HTMLAudioElement> {
     audio.src = await Assets.getAsset(name);
   });
 }
-function stopGame() {
+
+function stopGame(status=true) {
   if (d) {
     d.animate = false;
     d.setDisplay(false);
   }
-  state.value.playStatus = 'stop';
+  if (status) state.value.playStatus = 'stop';
+  else state.value.playStatus = 'softStop';
 }
+
 function tick() {
   if (state.value.playStatus === 'start') {
     ticks.value += tickTime.value;
     if (ticks.value >= maxTicks.value) {
-      stopGame();
+      stopGame(false);
       addGlyph(state.value.effects)
       setTimeout(() => {
-        startGame();
+        if (state.value.playStatus === 'softStop') startGame();
       }, 2000);
       return;
     }
   }
-  if (state.value.playStatus === 'stop') {
+  if (state.value.playStatus === 'stop' || state.value.playStatus === 'softStop') {
     return;
   }
   setTimeout(tick, tickTime.value);
 }
+
 function startGame() {
   if (state.value.playStatus === 'start') {
     return;
   }
   state.value.playStatus = 'start';
   ticks.value = 0;
-  d = new Skillcheck(skillCheck.value);
-  d.drawGliphSkillcheck({
-    effects: null,
-    perks: {},
-    autoApplyModifiers: true,
-    autoApplyPerks: false,
-  })
-  let startTime = Date.now() - state.value.modifiers.advertisetime;
-  let onSuccess=(status: string, angle: number) => {
-    d.playStatusSound(status);
-    if (status === "fail") {
-      addGlyphFail(state.value.effects);
-      getAudio('skillcheck_fail').then((audio) => {
-        audio.volume = state.value.settings.surround / 100;
-        audio.play();
-      });
-      d.shake(300);
-      d.sleep(200);
-      return stopGame()
-    } else if (status === "good") {
-      addGlyphSuccess(state.value.effects);
-      d.drawGliphSkillcheck({
-        effects: null,
-        perks: {},
-        autoApplyModifiers: true,
-        autoApplyPerks: false,
-      },angle)
-      d.animateGliph({
-        onSuccess: onSuccess,
-        startTime: Date.now(),
-        startPos:angle+90
-      });
-    }
-  }
-  d.animateGliph({
-    onSuccess: onSuccess,
-    startTime: startTime,
-    startPos:0
-  });
   setTimeout(() => {
-    tick();
-  }, state.value.modifiers.advertisetime);
+
+    d = new Skillcheck(skillCheck.value);
+    d.drawGliphSkillcheck({
+      effects: null,
+      perks: {},
+      autoApplyModifiers: true,
+      autoApplyPerks: false,
+    })
+    let startTime = Date.now() - state.value.modifiers.advertisetime;
+    console.log('start', startTime, state.value.modifiers.advertisetime)
+    let onSuccess = (status: string, angle: number) => {
+      d.playStatusSound(status);
+      if (status === "fail") {
+        addGlyphFail(state.value.effects);
+        getAudio('skillcheck_fail').then((audio) => {
+          audio.volume = state.value.settings.surround / 100;
+          audio.play();
+        });
+        d.shake(300);
+        stopGame(false);
+        addGlyph(state.value.effects)
+        setTimeout(() => {
+          if (state.value.playStatus === 'softStop') startGame();
+        }, 2000);
+        return;
+      } else if (status === "good") {
+        addGlyphSuccess(state.value.effects);
+        d.drawGliphSkillcheck({
+          effects: null,
+          perks: {},
+          autoApplyModifiers: true,
+          autoApplyPerks: false,
+        }, angle)
+        d.animateGliph({
+          onSuccess: onSuccess,
+          startTime: Date.now(),
+          startPos: angle + 90
+        });
+      }
+    }
+    d.animateGliph({
+      onSuccess: onSuccess,
+      startTime: startTime,
+      startPos: 0
+    });
+    setTimeout(() => {
+      tick();
+    }, state.value.modifiers.advertisetime);
+  }, 300);
+
 }
 
 function pauseGame() {
@@ -127,7 +141,7 @@ onMounted(() => {
 .skillcheck {
   position: fixed;
   top: calc(50% - 100px);
-  left:  calc(50% - 100px);
+  left: calc(50% - 100px);
   z-index: 1000;
 }
 
@@ -142,16 +156,29 @@ onMounted(() => {
   opacity: 1;
   transition: opacity 0.2s linear;
 }
+
 .shake {
   animation: horizontal-shaking 0.3s infinite;
 }
+
 @keyframes horizontal-shaking {
-  0% { transform: translateX(0) }
-  25% { transform: translateX(5px) }
-  50% { transform: translateX(-5px) }
-  75% { transform: translateX(5px) }
-  100% { transform: translateX(0) }
+  0% {
+    transform: translateX(0)
+  }
+  25% {
+    transform: translateX(5px)
+  }
+  50% {
+    transform: translateX(-5px)
+  }
+  75% {
+    transform: translateX(5px)
+  }
+  100% {
+    transform: translateX(0)
+  }
 }
+
 .progress {
   position: fixed;
   bottom: 80px;

@@ -16,7 +16,8 @@ function save() {
 }
 
 function getImage(name: string) {
-  return new URL(name, import.meta.url).href;
+  //return new URL(name, import.meta.url).href;
+  return name;
 }
 
 onMounted(() => {

@@ -158,8 +158,8 @@ function tick() {
             addGeneratorSkillCheckGreat(state.value.perks,state.value.effects);
             let increase = 1000;
             console.log(state.value.perks.hyperfocus.active, state.value.perks.hyperfocus.tokens)
-            if (state.value.perks.hyperfocus.active && state.value.perks.hyperfocus.tokens>0) {
-              increase += maxTicks.value * (0.04 * state.value.perks.hyperfocus.tokens);
+            if (state.value.perks.hyperfocus.active && state.value.perks.hyperfocus.tokens>=0) {
+              increase += maxTicks.value * (0.01 * state.value.perks.hyperfocus.tokens);
               state.value.perks.hyperfocus.tokens++;
             }
             console.log(state.value.perks.fasttrack.active, state.value.perks.fasttrack.tokens)
@@ -245,7 +245,7 @@ onMounted(() => {
 .visible {
   visibility: visible;
   opacity: 1;
-  transition: opacity 0.2s linear;
+  transition: opacity 0.05s linear;
 }
 .shake {
   animation: horizontal-shaking 0.3s infinite;
