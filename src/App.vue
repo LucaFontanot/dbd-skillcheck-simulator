@@ -47,6 +47,7 @@
         </v-list-item>
         <v-list-item
           title="Wiggle"
+          to="/wiggle"
         >
           <template v-slot:prepend>
             <img src="@/assets/icons/wiggle.png" width="24px" style="margin-right: 32px"/>

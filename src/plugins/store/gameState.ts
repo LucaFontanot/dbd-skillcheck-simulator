@@ -73,8 +73,11 @@ class GameState {
       advertisetime: number;
       dstime: number;
       v: number
-      gliphbasesize: number;
+      glyphbasesize: number;
       glyphduration: number;
+      wiggleGreat: number;
+      wiggleGood: number;
+      wiggleDuration: number;
     };
     perks: {};
     effects: {};

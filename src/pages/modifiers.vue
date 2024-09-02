@@ -37,7 +37,8 @@ onMounted(() => {
           <h3 class="text-center mb-5">Skill Check Modifiers</h3>
           <v-row>
             <v-col cols="12" md="4">
-              <v-slider v-model="modifiers.frequency" label="SkillCheck max delay" thumb-label min="2500" max="20000"
+              <v-label>SkillCheck max delay</v-label>
+              <v-slider v-model="modifiers.frequency" label="" thumb-label min="2500" max="20000"
                         color="light-green-lighten-2" @update:model-value="save">
                 <template v-slot:append>
                   <span>{{ parseInt(modifiers.frequency) }}ms</span>
@@ -53,7 +54,8 @@ onMounted(() => {
               </v-slider>
             </v-col>
             <v-col cols="12" md="4">
-              <v-slider v-model="modifiers.advertisetime" label="SkillCheck advertise delay" thumb-label min="0"
+              <v-label>SkillCheck advertise delay</v-label>
+              <v-slider v-model="modifiers.advertisetime" label="" thumb-label min="0"
                         max="5000"
                         color="light-green-lighten-2" @update:model-value="save">
                 <template v-slot:append>
@@ -70,7 +72,8 @@ onMounted(() => {
               </v-slider>
             </v-col>
             <v-col cols="12" md="4">
-              <v-slider v-model="modifiers.speed" label="SkillCheck base speed" thumb-label min="0.1" max="10"
+              <v-label>SkillCheck base speed</v-label>
+              <v-slider v-model="modifiers.speed" thumb-label min="0.1" max="10"
                         color="light-green-lighten-2" @update:model-value="save">
                 <template v-slot:append>
                   <span>{{ parseInt(modifiers.speed) }}x</span>
@@ -86,7 +89,8 @@ onMounted(() => {
               </v-slider>
             </v-col>
             <v-col cols="12" md="4">
-              <v-slider v-model="modifiers.dstime" label="SkillCheck DS Restart Delay" thumb-label min="2200"
+              <v-label>SkillCheck DS Restart Delay</v-label>
+              <v-slider v-model="modifiers.dstime" thumb-label min="2200"
                         max="10000"
                         color="light-green-lighten-2" @update:model-value="save">
                 <template v-slot:append>
@@ -106,7 +110,8 @@ onMounted(() => {
           <h3 class="text-center mb-5">Generator modifiers</h3>
           <v-row>
             <v-col cols="12" md="6">
-              <v-slider v-model="modifiers.gentime" label="Generator time" thumb-label min="10000" max="200000"
+              <v-label>Generator time</v-label>
+              <v-slider v-model="modifiers.gentime" thumb-label min="10000" max="200000"
                         color="light-green-lighten-2" @update:model-value="save">
                 <template v-slot:append>
                   <span>{{ parseInt(modifiers.gentime) }}ms</span>
@@ -142,7 +147,8 @@ onMounted(() => {
           <h3 class="text-center mb-5">Glyph modifiers</h3>
           <v-row>
             <v-col cols="12" md="6">
-              <v-slider v-model="modifiers.glyphduration" label="Glyph duration" thumb-label min="1000" max="15000"
+              <v-label>Glyph Duration</v-label>
+              <v-slider v-model="modifiers.glyphduration" thumb-label min="1000" max="15000"
                         color="light-green-lighten-2" @update:model-value="save">
                 <template v-slot:append>
                   <span>{{ parseInt(modifiers.glyphduration) }}ms</span>
@@ -158,13 +164,68 @@ onMounted(() => {
               </v-slider>
             </v-col>
             <v-col cols="12" md="6">
-              <v-slider v-model="modifiers.gliphbasesize" label="Glyph size" thumb-label min="20" max="100"
+              <v-label>Glyph Size</v-label>
+              <v-slider v-model="modifiers.glyphbasesize" thumb-label min="20" max="100"
                         color="light-green-lighten-2" @update:model-value="save">
                 <template v-slot:append>
-                  <span>{{ parseInt(modifiers.gliphbasesize) }}</span>
+                  <span>{{ parseInt(modifiers.glyphbasesize) }}</span>
                   <v-tooltip>
                     <template v-slot:activator="{ props }">
-                      <v-btn variant="flat" @click="modifiers.gliphbasesize = reset.gliphbasesize" icon v-bind="props">
+                      <v-btn variant="flat" @click="modifiers.glyphbasesize = reset.glyphbasesize" icon v-bind="props">
+                        <v-icon>mdi-reload</v-icon>
+                      </v-btn>
+                    </template>
+                    <span>Reset default</span>
+                  </v-tooltip>
+                </template>
+              </v-slider>
+            </v-col>
+          </v-row>
+          <h3 class="text-center mb-5">Wiggle modifiers</h3>
+          <v-row>
+            <v-col cols="12" md="6">
+              <v-label>Wiggle Duration</v-label>
+              <v-slider v-model="modifiers.wiggleDuration" thumb-label min="1000" max="30000"
+                        color="light-green-lighten-2" @update:model-value="save">
+                <template v-slot:append>
+                  <span>{{ parseInt(modifiers.wiggleDuration) }}ms</span>
+                  <v-tooltip>
+                    <template v-slot:activator="{ props }">
+                      <v-btn variant="flat" @click="modifiers.wiggleDuration = reset.wiggleDuration" icon v-bind="props">
+                        <v-icon>mdi-reload</v-icon>
+                      </v-btn>
+                    </template>
+                    <span>Reset default</span>
+                  </v-tooltip>
+                </template>
+              </v-slider>
+            </v-col>
+            <v-col cols="12" md="6">
+              <v-label>Wiggle Great Size</v-label>
+              <v-slider v-model="modifiers.wiggleGreat" thumb-label min="0" max="45"
+                        color="light-green-lighten-2" @update:model-value="save">
+                <template v-slot:append>
+                  <span>{{ parseInt(modifiers.wiggleGreat) }}</span>
+                  <v-tooltip>
+                    <template v-slot:activator="{ props }">
+                      <v-btn variant="flat" @click="modifiers.wiggleGreat = reset.wiggleGreat" icon v-bind="props">
+                        <v-icon>mdi-reload</v-icon>
+                      </v-btn>
+                    </template>
+                    <span>Reset default</span>
+                  </v-tooltip>
+                </template>
+              </v-slider>
+            </v-col>
+            <v-col cols="12" md="6">
+              <v-label>Wiggle Good Size</v-label>
+              <v-slider v-model="modifiers.wiggleGood" thumb-label min="0" max="45"
+                        color="light-green-lighten-2" @update:model-value="save">
+                <template v-slot:append>
+                  <span>{{ parseInt(modifiers.wiggleGood) }}</span>
+                  <v-tooltip>
+                    <template v-slot:activator="{ props }">
+                      <v-btn variant="flat" @click="modifiers.wiggleGood = reset.wiggleGood" icon v-bind="props">
                         <v-icon>mdi-reload</v-icon>
                       </v-btn>
                     </template>

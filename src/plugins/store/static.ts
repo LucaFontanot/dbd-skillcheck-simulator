@@ -126,7 +126,10 @@ const Static = {
     dstime:3000,
     advertisetime: 500,
     glyphduration: 5000,
-    gliphbasesize: 35,
+    glyphbasesize: 35,
+    wiggleGreat: 9,
+    wiggleGood: 25,
+    wiggleDuration: 16000,
     speed: 1,
     advertise:"advertise_02",
     v: 1
