@@ -191,13 +191,15 @@ function tick() {
             let increase = 1000;
             if (
               state.value.perks.hyperfocus.active &&
-              state.value.perks.hyperfocus.tokens >= 0 &&
-              state.value.perks.hyperfocus.tokens <
-                state.value.modifiers.hyperfocus.hyperfocusStacksMax
+              state.value.perks.hyperfocus.tokens >= 0
             ) {
               increase +=
                 maxTicks.value * (0.01 * state.value.perks.hyperfocus.tokens);
-              state.value.perks.hyperfocus.tokens++;
+              if (
+                state.value.perks.hyperfocus.tokens <
+                state.value.modifiers.hyperfocus.hyperfocusStacksMax
+              )
+                state.value.perks.hyperfocus.tokens++;
             }
             if (
               state.value.perks.fasttrack.active &&

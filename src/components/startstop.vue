@@ -1,4 +1,7 @@
 <script setup>
+import Stopwatch from "@/components/stopwatch.vue";
+import { onMounted, ref } from "vue";
+
 defineProps({
   onStart: Function,
   onStop: Function,
@@ -6,6 +9,13 @@ defineProps({
   onResume: Function,
 });
 const model = defineModel();
+
+const stopwatch = ref(null);
+
+onMounted(() => {
+  console.log("Mounted startstop component");
+  console.log(stopwatch.value);
+});
 </script>
 
 <template>
@@ -13,7 +23,7 @@ const model = defineModel();
     <div class="d-flex">
       <v-btn
         variant="outlined"
-        @click="onStart"
+        @click="onStart()"
         prepend-icon="mdi-play"
         class="ma-3"
         v-if="model === 'stop' || model === ''"
@@ -22,7 +32,7 @@ const model = defineModel();
       </v-btn>
       <v-btn
         variant="outlined"
-        @click="onStop"
+        @click="onStop()"
         prepend-icon="mdi-stop"
         class="ma-3"
         v-if="model === 'start' || model === 'pause' || model === 'softStop'"
@@ -31,7 +41,7 @@ const model = defineModel();
       </v-btn>
       <v-btn
         variant="outlined"
-        @click="onPause"
+        @click="onPause()"
         prepend-icon="mdi-pause"
         class="ma-3"
         v-if="model === 'start' || model === 'softStop'"
@@ -40,7 +50,7 @@ const model = defineModel();
       </v-btn>
       <v-btn
         variant="outlined"
-        @click="onResume"
+        @click="onResume()"
         prepend-icon="mdi-play"
         class="ma-3"
         v-if="model === 'pause'"
@@ -48,6 +58,7 @@ const model = defineModel();
         RESUME
       </v-btn>
     </div>
+    <Stopwatch class="d-none" ref="stopwatch"></Stopwatch>
   </div>
 </template>
 
