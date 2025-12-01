@@ -71,6 +71,7 @@ async function endGame() {
     d.setDisplay(false);
     hasGlyphStarted = false;
   }
+  state.value.perks.hyperfocus.tokens = 0;
   addGenerator(state.value.perks, state.value.effects);
   addGeneratorTime(maxTicks.value);
   tick();
@@ -188,22 +189,16 @@ function tick() {
           } else if (status === "great") {
             addGeneratorSkillCheckGreat(state.value.perks, state.value.effects);
             let increase = 1000;
-            console.log(
-              state.value.perks.hyperfocus.active,
-              state.value.perks.hyperfocus.tokens,
-            );
             if (
               state.value.perks.hyperfocus.active &&
-              state.value.perks.hyperfocus.tokens >= 0
+              state.value.perks.hyperfocus.tokens >= 0 &&
+              state.value.perks.hyperfocus.tokens <
+                state.value.modifiers.hyperfocus.hyperfocusStacksMax
             ) {
               increase +=
                 maxTicks.value * (0.01 * state.value.perks.hyperfocus.tokens);
               state.value.perks.hyperfocus.tokens++;
             }
-            console.log(
-              state.value.perks.fasttrack.active,
-              state.value.perks.fasttrack.tokens,
-            );
             if (
               state.value.perks.fasttrack.active &&
               state.value.perks.fasttrack.tokens > 0

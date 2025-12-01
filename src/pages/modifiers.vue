@@ -152,6 +152,19 @@ onMounted(() => {
               </v-slider>
             </v-col>
           </v-row>
+          <h3 class="text-center mb-5">Perks Modifiers</h3>
+          <v-row>
+            <v-col cols="12" md="2">
+              <v-number-input
+                v-model="modifiers.hyperfocusStacksMax"
+                label="Max Hyperfocus stacks"
+                min="1"
+                color="light-green-lighten-2"
+                @update:model-value="save"
+                variant="underlined"
+              ></v-number-input>
+            </v-col>
+          </v-row>
           <h3 class="text-center mb-5">Generator modifiers</h3>
           <v-row>
             <v-col cols="12" md="6">
@@ -188,6 +201,7 @@ onMounted(() => {
                 label="Generator advertise theme"
                 thumb-label
                 color="light-green-lighten-2"
+                variant="underlined"
                 @update:model-value="playandsave(modifiers.advertise)"
                 :items="[
                   'advertise_01',

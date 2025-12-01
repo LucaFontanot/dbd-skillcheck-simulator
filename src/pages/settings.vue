@@ -244,6 +244,7 @@ onMounted(() => {
                 v-model="settings.keyboard.keys"
                 :items="settings.keyboard.keys"
                 label="Keyboard SkillCheck events"
+                variant="underlined"
                 multiple
               >
                 <template v-slot:selection="{ item, index }">
@@ -303,6 +304,7 @@ onMounted(() => {
                 v-model="settings.controller.keys"
                 :items="settings.controller.keys"
                 label="Controller SkillCheck events"
+                variant="underlined"
                 multiple
               >
                 <template v-slot:selection="{ item, index }">

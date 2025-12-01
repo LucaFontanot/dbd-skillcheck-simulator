@@ -135,6 +135,7 @@ const Static = {
   modifiers: {
     gentime: 90000,
     frequency: 7000,
+    hyperfocusStacksMax: 6,
     dstime: 3000,
     advertisetime: 500,
     glyphduration: 5000,
