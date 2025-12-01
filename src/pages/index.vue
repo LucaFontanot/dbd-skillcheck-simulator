@@ -91,9 +91,11 @@ function tick() {
     if (ticks.value >= maxTicks.value) {
       return endGame();
     }
-    //if 90%
-    console.log(ticks.value, maxTicks.value * 0.9, hasGlyphStarted);
-    if (ticks.value >= maxTicks.value * 0.9 && !hasGlyphStarted) {
+    if (
+      state.value.perks.mercilessStorm.active &&
+      ticks.value >= maxTicks.value * 0.9 &&
+      !hasGlyphStarted
+    ) {
       d.animate = false;
       hasGlyphStarted = true;
       d = new Skillcheck(skillCheck.value);
