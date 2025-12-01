@@ -1,111 +1,80 @@
 import GameState from "@/plugins/store/gameState";
 import Assets from "./assets";
-import {PSC, XBOX} from "../controller";
+import { PSC, XBOX } from "../controller";
 
 class Skillcheck {
-  canvas: HTMLCanvasElement;
-  ctx: CanvasRenderingContext2D;
-  width: number;
-  height: number;
-  needlePositionState: {
-    great: {
-      start: number,
-      end: number
-    } | null | number,
-    good: {
-      start: number,
-      end: number
-    } | null | number,
-    startTime: number,
-    startZero: number,
-    clockWise: boolean,
-    speed: number,
-    mode: string,
-    modifiers: any[],
-    advertiseTime: number
-    hasTuched: boolean
-  } | null;
-  perks: any | null = null;
-  effects: any | null = null;
-  fps: number = 60;
-  animate: boolean = false;
-  clickEvent: boolean = false;
-  event: Function | null = null;
-  state: any;
-  settings: any;
-  constructor(canvas: HTMLCanvasElement) {
+  constructor(canvas) {
     this.canvas = canvas;
     this.ctx = canvas.getContext("2d");
     this.width = canvas.width;
     this.height = canvas.height;
     this.needlePositionState = null;
+    this.perks = null;
+    this.effects = null;
+    this.fps = 60;
+    this.animate = false;
+    this.clickEvent = false;
+    this.event = null;
+    this.state = null;
+    this.settings = null;
+    this.grease = 0;
+    this.props = null;
+
     this.fps = GameState.getState().settings.fps;
     this.setDisplay(false);
-    this.settings=GameState.getState().settings;
+    this.settings = GameState.getState().settings;
   }
 
-  getRandomArbitraryRange(min: number, max: number, fixed: number | null = null) {
-    return Number((Math.random() * (max - min) + min).toFixed(fixed || 0))
+  getRandomArbitraryRange(min, max, fixed = null) {
+    return Number((Math.random() * (max - min) + min).toFixed(fixed || 0));
   }
 
-  rad(deg: number) {
-    return (Math.PI / 180) * deg
+  rad(deg) {
+    return (Math.PI / 180) * deg;
   }
 
-  getInsideText(): string {
+  getInsideText() {
     const str = [];
-    if (this.settings.keyboard.keys.length>0){
-      str.push(this.settings.keyboard.keys[0].toUpperCase())
+    if (this.settings.keyboard.keys.length > 0) {
+      str.push(this.settings.keyboard.keys[0].toUpperCase());
     }
-    if (this.settings.controller.keys.length>0){
-      console.log(this.settings.controller.keys[0])
-      str.push(XBOX[parseInt(this.settings.controller.keys[0])])
-      str.push(PSC[parseInt(this.settings.controller.keys[0])])
-
+    if (this.settings.controller.keys.length > 0) {
+      console.log(this.settings.controller.keys[0]);
+      str.push(XBOX[parseInt(this.settings.controller.keys[0])]);
+      str.push(PSC[parseInt(this.settings.controller.keys[0])]);
     }
     return str.join(" / ");
   }
 
-  setDisplay(display: boolean) {
+  setDisplay(display) {
     const ds = this;
     if (display) {
       this.event = function (e) {
         if (ds.grease === 0 || Date.now() - ds.grease > 150) {
           ds.clickEvent = true;
         }
-      }
-      //eslint-disable-next-line
+      };
+
       document.addEventListener("skillchedkClick", this.event);
-      this.canvas.classList.remove("hidden")
-      this.canvas.classList.add("visible")
+      this.canvas.classList.remove("hidden");
+      this.canvas.classList.add("visible");
     } else {
-      //eslint-disable-next-line
       document.removeEventListener("skillchedkClick", this.event);
-      this.canvas.classList.remove("visible")
-      this.canvas.classList.remove("shake")
-      this.canvas.classList.add("hidden")
+      this.canvas.classList.remove("visible");
+      this.canvas.classList.remove("shake");
+      this.canvas.classList.add("hidden");
     }
   }
 
-  shake(time: number) {
-    this.canvas.classList.add("shake")
+  shake(time) {
+    this.canvas.classList.add("shake");
     setTimeout(() => {
-      this.canvas.classList.remove("shake")
-    }, time)
+      this.canvas.classList.remove("shake");
+    }, time);
   }
 
-  grease: number = 0;
-
-  drawGeneratorSkillcheck(props: {
-    greatSize: number,
-    goodSize: number,
-    perks: any[] | null,
-    effects: any[] | null,
-    autoApplyModifiers: boolean,
-    autoApplyPerks: boolean,
-    color: string
-  }) {
-    this.canvas.classList.remove("shake")
+  drawGeneratorSkillcheck(props) {
+    this.canvas.classList.remove("shake");
     this.props = props;
     this.canvas.style.top = null;
     this.canvas.style.left = null;
@@ -120,20 +89,38 @@ class Skillcheck {
     this.perks = props.perks;
     this.effects = props.effects;
     let speed = state.modifiers.speed;
-    if (this.perks && this.perks.oppression && this.perks.unnervingPresence.active) {
-      props.goodSize = props.goodSize * ((this.perks.unnervingPresence.tier + 30) / 100);
+    if (
+      this.perks &&
+      this.perks.oppression &&
+      this.perks.unnervingPresence.active
+    ) {
+      props.goodSize =
+        props.goodSize * ((this.perks.unnervingPresence.tier + 30) / 100);
     }
     if (this.perks && this.perks.oppression && this.perks.oppression.active) {
       props.goodSize = 0;
       props.greatSize = 15;
     }
-    if (this.perks && this.perks.thisisnothappening && this.perks.thisisnothappening.active) {
+    if (
+      this.perks &&
+      this.perks.thisisnothappening &&
+      this.perks.thisisnothappening.active
+    ) {
       props.greatSize = props.greatSize + props.greatSize * 0.5;
     }
-    if (this.perks && this.perks.hyperfocus && this.perks.hyperfocus.active && this.perks.hyperfocus.tokens > 0) {
-      speed = speed + (speed * 0.04) * this.perks.hyperfocus.tokens;
+    if (
+      this.perks &&
+      this.perks.hyperfocus &&
+      this.perks.hyperfocus.active &&
+      this.perks.hyperfocus.tokens > 0
+    ) {
+      speed = speed + speed * 0.04 * this.perks.hyperfocus.tokens;
     }
-    if (this.perks && this.perks.coulrophobia && this.perks.coulrophobia.active) {
+    if (
+      this.perks &&
+      this.perks.coulrophobia &&
+      this.perks.coulrophobia.active
+    ) {
       speed = speed + speed * 0.5;
     }
     if (this.perks && this.perks.ruin && this.perks.ruin.active) {
@@ -144,8 +131,9 @@ class Skillcheck {
       this.canvas.style.left = this.getRandomArbitraryRange(30, 60) + "vw";
     }
     let clockwise = true;
-    const minRotateDegStart = 20
-    let maxRotateDegStop = (240 - minRotateDegStart) - props.goodSize + props.greatSize;
+    const minRotateDegStart = 20;
+    let maxRotateDegStop =
+      240 - minRotateDegStart - props.goodSize + props.greatSize;
     if (this.effects && this.effects.madness && this.effects.madness.active) {
       if (this.getRandomArbitraryRange(0, 2) === 0) {
         clockwise = false;
@@ -155,22 +143,26 @@ class Skillcheck {
         speed = speed + speed * 0.1;
       }
       if (this.getRandomArbitraryRange(0, 1) === 0) {
-        this.canvas.classList.add("shake")
+        this.canvas.classList.add("shake");
       }
       if (this.getRandomArbitraryRange(0, 2) === 0) {
         this.canvas.style.top = this.getRandomArbitraryRange(30, 60) + "vh";
         this.canvas.style.left = this.getRandomArbitraryRange(30, 60) + "vw";
       }
     }
-    const startFrom = this.getRandomArbitraryRange(minRotateDegStart, maxRotateDegStop, 4)
+    const startFrom = this.getRandomArbitraryRange(
+      minRotateDegStart,
+      maxRotateDegStop,
+      4,
+    );
     this.needlePositionState = {
       great: {
         start: startFrom,
-        end: Number((startFrom + props.greatSize).toFixed(4))
+        end: Number((startFrom + props.greatSize).toFixed(4)),
       },
       good: {
         start: Number((startFrom + props.greatSize).toFixed(4)),
-        end: Number((startFrom + props.greatSize + props.goodSize).toFixed(4))
+        end: Number((startFrom + props.greatSize + props.goodSize).toFixed(4)),
       },
       mode: "generator",
       modifiers: [],
@@ -179,7 +171,27 @@ class Skillcheck {
       clockWise: clockwise,
       speed: speed,
       advertiseTime: this.state.modifiers.advertisetime,
-      hasTuched: false
+      hasTuched: false,
+    };
+
+    console.log("DRAW GENERATOR SKILLCHECK", this.needlePositionState);
+
+    if (!this.needlePositionState.clockWise) {
+      console.log("CLOCKWISE ADJUSTMENT");
+      let newGreatPosition = {
+        end: this.needlePositionState.good.end,
+        start: Number(
+          this.needlePositionState.good.end - props.greatSize,
+        ).toFixed(4),
+      };
+      let newGoodPosition = {
+        start: this.needlePositionState.great.start,
+        end: Number(
+          this.needlePositionState.great.start + props.goodSize,
+        ).toFixed(4),
+      };
+      this.needlePositionState.good = newGoodPosition;
+      this.needlePositionState.great = newGreatPosition;
     }
     const counterClockwise = false;
     const x = this.width / 2;
@@ -189,46 +201,98 @@ class Skillcheck {
     this.ctx.clearRect(0, 0, this.width, this.height);
     //OUTLINE
     this.ctx.beginPath();
-    this.ctx.arc(x, y, radius, this.rad(this.needlePositionState.good.end), this.rad(this.needlePositionState.great.start), counterClockwise);
+    if (
+      this.needlePositionState.great.start > this.needlePositionState.good.start
+    ) {
+      this.ctx.arc(
+        x,
+        y,
+        radius,
+        this.rad(this.needlePositionState.great.end),
+        this.rad(this.needlePositionState.good.start),
+        counterClockwise,
+      );
+    } else {
+      this.ctx.arc(
+        x,
+        y,
+        radius,
+        this.rad(this.needlePositionState.good.end),
+        this.rad(this.needlePositionState.great.start),
+        counterClockwise,
+      );
+    }
     this.ctx.lineWidth = 2;
     this.ctx.strokeStyle = props.color;
     this.ctx.stroke();
     //GREAT
     this.ctx.beginPath();
-    this.ctx.arc(x, y, radius, this.rad(this.needlePositionState.great.start), this.rad(this.needlePositionState.great.end), counterClockwise);
+    this.ctx.arc(
+      x,
+      y,
+      radius,
+      this.rad(this.needlePositionState.great.start),
+      this.rad(this.needlePositionState.great.end),
+      counterClockwise,
+    );
     this.ctx.lineWidth = offsetSize * 2 + 1;
     this.ctx.strokeStyle = props.color;
     this.ctx.stroke();
     //GOOD TOP
     this.ctx.beginPath();
-    this.ctx.arc(x, y, radius - offsetSize, this.rad(this.needlePositionState.good.start), this.rad(this.needlePositionState.good.end), counterClockwise);
+    this.ctx.arc(
+      x,
+      y,
+      radius - offsetSize,
+      this.rad(this.needlePositionState.good.start),
+      this.rad(this.needlePositionState.good.end),
+      counterClockwise,
+    );
     this.ctx.lineWidth = 2;
     this.ctx.strokeStyle = props.color;
     this.ctx.stroke();
     //GOOD BOTTOM
     this.ctx.beginPath();
-    this.ctx.arc(x, y, radius + offsetSize, this.rad(this.needlePositionState.good.start), this.rad(this.needlePositionState.good.end), counterClockwise);
+    this.ctx.arc(
+      x,
+      y,
+      radius + offsetSize,
+      this.rad(this.needlePositionState.good.start),
+      this.rad(this.needlePositionState.good.end),
+      counterClockwise,
+    );
     this.ctx.lineWidth = 2;
     this.ctx.strokeStyle = props.color;
     this.ctx.stroke();
     //GOOD BORDER TOP
     this.ctx.beginPath();
-    this.ctx.arc(x, y, radius, this.rad(this.needlePositionState.good.start) - 0.02, this.rad(this.needlePositionState.good.start), counterClockwise);
+    this.ctx.arc(
+      x,
+      y,
+      radius,
+      this.rad(this.needlePositionState.good.start) - 0.02,
+      this.rad(this.needlePositionState.good.start),
+      counterClockwise,
+    );
     this.ctx.lineWidth = offsetSize * 2 + 1;
     this.ctx.strokeStyle = props.color;
     this.ctx.stroke();
     //GOOD BORDER BOTTOM
     this.ctx.beginPath();
-    this.ctx.arc(x, y, radius, this.rad(this.needlePositionState.good.end), this.rad(this.needlePositionState.good.end) + 0.02, counterClockwise);
+    this.ctx.arc(
+      x,
+      y,
+      radius,
+      this.rad(this.needlePositionState.good.end),
+      this.rad(this.needlePositionState.good.end) + 0.02,
+      counterClockwise,
+    );
     this.ctx.lineWidth = offsetSize * 2 + 1;
     this.ctx.strokeStyle = props.color;
     this.ctx.stroke();
-    return;
   }
 
-  props: {} | null = null;
-
-  fixAngle(angle: number) {
+  fixAngle(angle) {
     if (angle < 0) {
       angle = 360 + angle;
     }
@@ -238,13 +302,8 @@ class Skillcheck {
     return angle;
   }
 
-  drawGliphSkillcheck(props: {
-    perks: {} | null,
-    effects: {} | null,
-    autoApplyModifiers: boolean,
-    autoApplyPerks: boolean,
-  }, curPos: number = 270) {
-    this.canvas.classList.remove("shake")
+  drawGliphSkillcheck(props, curPos = 270) {
+    this.canvas.classList.remove("shake");
     this.props = props;
     this.canvas.style.top = null;
     this.canvas.style.left = null;
@@ -273,19 +332,23 @@ class Skillcheck {
         speed = speed + speed * 0.1;
       }*/
       if (this.getRandomArbitraryRange(0, 1) === 0) {
-        this.canvas.classList.add("shake")
+        this.canvas.classList.add("shake");
       }
       if (this.getRandomArbitraryRange(0, 2) === 0) {
         this.canvas.style.top = this.getRandomArbitraryRange(30, 80) + "vh";
         this.canvas.style.left = this.getRandomArbitraryRange(30, 80) + "vw";
       }
     }
-    let startFrom = this.getRandomArbitraryRange(minRotateDegStart, maxRotateDegStop, 4)
+    let startFrom = this.getRandomArbitraryRange(
+      minRotateDegStart,
+      maxRotateDegStop,
+      4,
+    );
     startFrom = this.fixAngle(startFrom);
     this.needlePositionState = {
       good: {
         start: startFrom,
-        end: Number((startFrom + sksise).toFixed(4))
+        end: Number((startFrom + sksise).toFixed(4)),
       },
       great: null,
       mode: "gliph",
@@ -294,9 +357,11 @@ class Skillcheck {
       startZero: 0,
       clockWise: clockwise,
       speed: speed,
-      advertiseTime: this.needlePositionState ? 0 : this.state.modifiers.advertisetime,
-      hasTuched: false
-    }
+      advertiseTime: this.needlePositionState
+        ? 0
+        : this.state.modifiers.advertisetime,
+      hasTuched: false,
+    };
     const color = "#ffffff";
     const counterClockwise = false;
     const x = this.width / 2;
@@ -306,86 +371,116 @@ class Skillcheck {
     this.ctx.clearRect(0, 0, this.width, this.height);
     //OUTLINE
     this.ctx.beginPath();
-    this.ctx.arc(x, y, radius, this.rad(this.needlePositionState.good.end), this.rad(this.needlePositionState.good.start), counterClockwise);
+    this.ctx.arc(
+      x,
+      y,
+      radius,
+      this.rad(this.needlePositionState.good.end),
+      this.rad(this.needlePositionState.good.start),
+      counterClockwise,
+    );
     this.ctx.lineWidth = 2;
     this.ctx.strokeStyle = color;
     this.ctx.stroke();
     //GOOD TOP
     this.ctx.beginPath();
-    this.ctx.arc(x, y, radius - offsetSize, this.rad(this.needlePositionState.good.start), this.rad(this.needlePositionState.good.end), counterClockwise);
+    this.ctx.arc(
+      x,
+      y,
+      radius - offsetSize,
+      this.rad(this.needlePositionState.good.start),
+      this.rad(this.needlePositionState.good.end),
+      counterClockwise,
+    );
     this.ctx.lineWidth = 2;
     this.ctx.strokeStyle = color;
     this.ctx.stroke();
     //GOOD BOTTOM
     this.ctx.beginPath();
-    this.ctx.arc(x, y, radius + offsetSize, this.rad(this.needlePositionState.good.start), this.rad(this.needlePositionState.good.end), counterClockwise);
+    this.ctx.arc(
+      x,
+      y,
+      radius + offsetSize,
+      this.rad(this.needlePositionState.good.start),
+      this.rad(this.needlePositionState.good.end),
+      counterClockwise,
+    );
     this.ctx.lineWidth = 2;
     this.ctx.strokeStyle = color;
     this.ctx.stroke();
     //GOOD BORDER TOP
     this.ctx.beginPath();
-    this.ctx.arc(x, y, radius, this.rad(this.needlePositionState.good.start) - 0.02, this.rad(this.needlePositionState.good.start), counterClockwise);
+    this.ctx.arc(
+      x,
+      y,
+      radius,
+      this.rad(this.needlePositionState.good.start) - 0.02,
+      this.rad(this.needlePositionState.good.start),
+      counterClockwise,
+    );
     this.ctx.lineWidth = offsetSize * 2 + 1;
     this.ctx.strokeStyle = color;
     this.ctx.stroke();
     //GOOD BORDER BOTTOM
     this.ctx.beginPath();
-    this.ctx.arc(x, y, radius, this.rad(this.needlePositionState.good.end), this.rad(this.needlePositionState.good.end) + 0.02, counterClockwise);
+    this.ctx.arc(
+      x,
+      y,
+      radius,
+      this.rad(this.needlePositionState.good.end),
+      this.rad(this.needlePositionState.good.end) + 0.02,
+      counterClockwise,
+    );
     this.ctx.lineWidth = offsetSize * 2 + 1;
     this.ctx.strokeStyle = color;
     this.ctx.stroke();
     return;
   }
 
-  angleToXY(angle: number, center: number[], radius: number) {
+  angleToXY(angle, center, radius) {
     return [
       center[0] + radius * Math.cos(angle),
-      center[1] + radius * Math.sin(angle)
+      center[1] + radius * Math.sin(angle),
     ];
   }
 
-  async getImage(name: string): Promise<HTMLImageElement> {
+  async getImage(name) {
     // eslint-disable-next-line no-async-promise-executor
     return new Promise(async (resolve, reject) => {
       const image = new Image();
       image.onload = function () {
         resolve(image);
-      }
+      };
       image.src = await Assets.getAsset(name);
     });
   }
 
-  async getAudio(name: string): Promise<HTMLAudioElement> {
+  async getAudio(name) {
     // eslint-disable-next-line no-async-promise-executor
     return new Promise(async (resolve, reject) => {
       const audio = new Audio();
       audio.oncanplay = function () {
         resolve(audio);
-      }
+      };
       audio.src = await Assets.getAsset(name);
     });
   }
 
-  async sleep(ms: number) {
-    return new Promise(resolve => setTimeout(resolve, ms));
+  async sleep(ms) {
+    return new Promise((resolve) => setTimeout(resolve, ms));
   }
 
-  isAngleInBetween(angle: number, start: number, end: number) {
+  isAngleInBetween(angle, start, end) {
     angle = this.fixAngle(angle);
     start = this.fixAngle(start);
     end = this.fixAngle(end);
     if (start > end) {
-      return (angle >= start || angle <= end);
+      return angle >= start || angle <= end;
     }
-    return (angle >= start && angle <= end);
+    return angle >= start && angle <= end;
   }
 
-  async animateGenerator(
-    props: {
-      maxrotation: number,
-      onSuccess: Function,
-    }
-  ) {
+  async animateGenerator(props) {
     const fps = this.fps;
     const ref = this;
     const canvasSave = this.ctx.getImageData(0, 0, this.width, this.height);
@@ -400,7 +495,7 @@ class Skillcheck {
         if (this.perks.lullaby.tokens === 5) {
           play = false;
         }
-        d = d - (d * (this.perks.lullaby.tokens * 0.14));
+        d = d - d * (this.perks.lullaby.tokens * 0.14);
       }
       if (play) {
         advertise.play();
@@ -409,21 +504,27 @@ class Skillcheck {
     }
     ref.needlePositionState.startTime = Date.now();
     ref.setDisplay(true);
-    animate()
+    animate();
 
     async function animate() {
       if (!ref.animate) {
         return ref.setDisplay(false);
       }
-      if (ref.state.playStatus !== 'start') {
+      if (ref.state.playStatus !== "start") {
         return ref.setDisplay(false);
       }
       const rotationTime = 1050;
       let angle =
-        ref.needlePositionState.startZero + ref.needlePositionState.speed * ((Date.now() - ref.needlePositionState.startTime) / (rotationTime / 360));
-      if (ref.needlePositionState.clockWise == false) {
+        ref.needlePositionState.startZero +
+        ref.needlePositionState.speed *
+          ((Date.now() - ref.needlePositionState.startTime) /
+            (rotationTime / 360));
+      if (ref.needlePositionState.clockWise === false) {
         angle =
-          ref.needlePositionState.startZero - ref.needlePositionState.speed * ((Date.now() - ref.needlePositionState.startTime) / (rotationTime / 360));
+          ref.needlePositionState.startZero -
+          ref.needlePositionState.speed *
+            ((Date.now() - ref.needlePositionState.startTime) /
+              (rotationTime / 360));
       }
       ref.ctx.clearRect(0, 0, ref.width, ref.height);
       ref.ctx.putImageData(canvasSave, 0, 0);
@@ -453,42 +554,98 @@ class Skillcheck {
       angle = angle % 360;
       if (ref.clickEvent) {
         ref.animate = false;
-        if (angle >= ref.needlePositionState.great.start && angle <= ref.needlePositionState.great.end) {
+        if (
+          angle >= ref.needlePositionState.great.start &&
+          angle <= ref.needlePositionState.great.end
+        ) {
           props.onSuccess("great");
-        } else if (angle >= ref.needlePositionState.good.start && angle <= ref.needlePositionState.good.end) {
-          if (ref.perks && ref.perks.stakeout && ref.perks.stakeout.active && ref.perks.stakeout.tokens > 0) {
+        } else if (
+          angle >= ref.needlePositionState.good.start &&
+          angle <= ref.needlePositionState.good.end
+        ) {
+          if (
+            ref.perks &&
+            ref.perks.stakeout &&
+            ref.perks.stakeout.active &&
+            ref.perks.stakeout.tokens > 0
+          ) {
             ref.perks.stakeout.tokens--;
             props.onSuccess("great");
           } else {
             props.onSuccess("good");
           }
         } else {
-          if (ref.effects && ref.effects.correctiveaction && ref.effects.correctiveaction.active) {
+          if (
+            ref.effects &&
+            ref.effects.correctiveaction &&
+            ref.effects.correctiveaction.active
+          ) {
             props.onSuccess("good");
           } else {
             props.onSuccess("fail");
           }
         }
-        await ref.sleep(400)
+        await ref.sleep(400);
         ref.setDisplay(false);
       }
-      if (ref.needlePositionState.great && angle > ref.needlePositionState.great.start && angle < ref.needlePositionState.great.end) {
+      if (
+        ref.needlePositionState.great &&
+        angle > ref.needlePositionState.great.start &&
+        angle < ref.needlePositionState.great.end
+      ) {
         ref.needlePositionState.hasTuched = true;
       }
-      if (ref.needlePositionState.good && angle > ref.needlePositionState.good.start && angle < ref.needlePositionState.good.end) {
+      if (
+        ref.needlePositionState.good &&
+        angle > ref.needlePositionState.good.start &&
+        angle < ref.needlePositionState.good.end
+      ) {
         ref.needlePositionState.hasTuched = true;
       }
-      if (ref.needlePositionState.great && !ref.needlePositionState.good && angle > ref.needlePositionState.great.end && ref.needlePositionState.hasTuched) {
-        ref.animate = false;
-        props.onSuccess("fail");
-        await ref.sleep(400)
-        ref.setDisplay(false);
-      }
-      if (ref.needlePositionState.good && angle > ref.needlePositionState.good.end && ref.needlePositionState.hasTuched) {
-        ref.animate = false;
-        props.onSuccess("fail");
-        await ref.sleep(400)
-        ref.setDisplay(false);
+      if (ref.needlePositionState.clockWise) {
+        if (
+          ref.needlePositionState.great &&
+          !ref.needlePositionState.good &&
+          angle > ref.needlePositionState.great.end &&
+          ref.needlePositionState.hasTuched
+        ) {
+          ref.animate = false;
+          props.onSuccess("fail");
+          await ref.sleep(400);
+          ref.setDisplay(false);
+        }
+        if (
+          ref.needlePositionState.good &&
+          angle > ref.needlePositionState.good.end &&
+          ref.needlePositionState.hasTuched
+        ) {
+          ref.animate = false;
+          props.onSuccess("fail");
+          await ref.sleep(400);
+          ref.setDisplay(false);
+        }
+      } else {
+        if (
+          ref.needlePositionState.great &&
+          !ref.needlePositionState.good &&
+          angle < ref.needlePositionState.great.start &&
+          ref.needlePositionState.hasTuched
+        ) {
+          ref.animate = false;
+          props.onSuccess("fail");
+          await ref.sleep(400);
+          ref.setDisplay(false);
+        }
+        if (
+          ref.needlePositionState.good &&
+          angle < ref.needlePositionState.good.start &&
+          ref.needlePositionState.hasTuched
+        ) {
+          ref.animate = false;
+          props.onSuccess("fail");
+          await ref.sleep(400);
+          ref.setDisplay(false);
+        }
       }
 
       setTimeout(() => {
@@ -497,11 +654,7 @@ class Skillcheck {
     }
   }
 
-  async animateGliph(props: {
-    onSuccess: Function,
-    startTime: number,
-    startPos: number,
-  }) {
+  async animateGliph(props) {
     const fps = this.fps;
     const ref = this;
     const canvasSave = this.ctx.getImageData(0, 0, this.width, this.height);
@@ -518,22 +671,27 @@ class Skillcheck {
     ref.needlePositionState.startTime = props.startTime;
     ref.needlePositionState.hasTuched = false;
     ref.clickEvent = false;
-    animate()
-
+    animate();
 
     async function animate() {
       if (!ref.animate) {
         return ref.setDisplay(false);
       }
-      if (ref.state.playStatus !== 'start') {
+      if (ref.state.playStatus !== "start") {
         return ref.setDisplay(false);
       }
       const rotationTime = 1050;
       let angle =
-        props.startPos + ref.needlePositionState.speed * ((Date.now() - ref.needlePositionState.startTime) / (rotationTime / 360));
+        props.startPos +
+        ref.needlePositionState.speed *
+          ((Date.now() - ref.needlePositionState.startTime) /
+            (rotationTime / 360));
       if (ref.needlePositionState.clockWise == false) {
         angle =
-          props.startPos - ref.needlePositionState.speed * ((Date.now() - ref.needlePositionState.startTime) / (rotationTime / 360));
+          props.startPos -
+          ref.needlePositionState.speed *
+            ((Date.now() - ref.needlePositionState.startTime) /
+              (rotationTime / 360));
       }
       ref.ctx.clearRect(0, 0, ref.width, ref.height);
       ref.ctx.putImageData(canvasSave, 0, 0);
@@ -553,16 +711,33 @@ class Skillcheck {
       //Draw the image in the center of the canvas
       angle = angle - 90;
       angle = ref.fixAngle(angle);
-      if (ref.needlePositionState.good && ref.isAngleInBetween(angle, ref.needlePositionState.good.start, ref.needlePositionState.good.end)) {
+      if (
+        ref.needlePositionState.good &&
+        ref.isAngleInBetween(
+          angle,
+          ref.needlePositionState.good.start,
+          ref.needlePositionState.good.end,
+        )
+      ) {
         ref.needlePositionState.hasTuched = true;
       }
       if (ref.clickEvent) {
         ref.animate = false;
-        if (ref.isAngleInBetween(angle, ref.needlePositionState.good.start, ref.needlePositionState.good.end)) {
+        if (
+          ref.isAngleInBetween(
+            angle,
+            ref.needlePositionState.good.start,
+            ref.needlePositionState.good.end,
+          )
+        ) {
           ref.grease = Date.now();
           return props.onSuccess("good", angle);
         } else {
-          if (ref.effects && ref.effects.correctiveaction && ref.effects.correctiveaction.active) {
+          if (
+            ref.effects &&
+            ref.effects.correctiveaction &&
+            ref.effects.correctiveaction.active
+          ) {
             return props.onSuccess("good", angle);
           } else {
             return props.onSuccess("fail", angle);
@@ -570,7 +745,15 @@ class Skillcheck {
         }
       }
 
-      if (ref.needlePositionState.good && !ref.isAngleInBetween(angle, ref.needlePositionState.good.start, ref.needlePositionState.good.end) && ref.needlePositionState.hasTuched) {
+      if (
+        ref.needlePositionState.good &&
+        !ref.isAngleInBetween(
+          angle,
+          ref.needlePositionState.good.start,
+          ref.needlePositionState.good.end,
+        ) &&
+        ref.needlePositionState.hasTuched
+      ) {
         ref.animate = false;
         props.onSuccess("fail");
         return;
@@ -582,7 +765,7 @@ class Skillcheck {
     }
   }
 
-  playStatusSound(name: string) {
+  playStatusSound(name) {
     let audio = "";
     if (name === "great") {
       audio = "skillcheck_great";
@@ -600,16 +783,9 @@ class Skillcheck {
     }
   }
 
-  drawWiggleSkillcheck(props: {
-    greatSize: number,
-    goodSize: number,
-    effects: any[] | null,
-    autoApplyModifiers: boolean,
-    clockwise: boolean,
-    color: string
-  }) {
-    if (!this.needlePositionState){
-      this.canvas.classList.remove("shake")
+  drawWiggleSkillcheck(props) {
+    if (!this.needlePositionState) {
+      this.canvas.classList.remove("shake");
     }
     this.props = props;
     this.canvas.style.top = null;
@@ -626,9 +802,9 @@ class Skillcheck {
         speed = speed + speed * 0.1;
       }
       if (this.getRandomArbitraryRange(0, 1) === 0) {
-        this.canvas.classList.add("shake")
-      }else{
-        this.canvas.classList.remove("shake")
+        this.canvas.classList.add("shake");
+      } else {
+        this.canvas.classList.remove("shake");
       }
       if (this.getRandomArbitraryRange(0, 2) === 0) {
         this.canvas.style.top = this.getRandomArbitraryRange(30, 60) + "vh";
@@ -645,9 +821,11 @@ class Skillcheck {
       startZero: 0,
       clockWise: props.clockwise,
       speed: speed,
-      advertiseTime: this.needlePositionState ? 0 : this.state.modifiers.advertisetime,
-      hasTuched: false
-    }
+      advertiseTime: this.needlePositionState
+        ? 0
+        : this.state.modifiers.advertisetime,
+      hasTuched: false,
+    };
     const counterClockwise = false;
     const x = this.width / 2;
     const y = this.height / 2;
@@ -656,78 +834,184 @@ class Skillcheck {
     this.ctx.clearRect(0, 0, this.width, this.height);
     //OUTLINE
     this.ctx.beginPath();
-    this.ctx.arc(x, y, radius, this.rad(this.needlePositionState.good + this.needlePositionState.great), this.rad(180 - this.needlePositionState.good - this.needlePositionState.great), counterClockwise);
+    this.ctx.arc(
+      x,
+      y,
+      radius,
+      this.rad(this.needlePositionState.good + this.needlePositionState.great),
+      this.rad(
+        180 - this.needlePositionState.good - this.needlePositionState.great,
+      ),
+      counterClockwise,
+    );
     this.ctx.lineWidth = 2;
     this.ctx.strokeStyle = props.color;
     this.ctx.stroke();
     this.ctx.beginPath();
-    this.ctx.arc(x, y, radius, this.rad(180 + this.needlePositionState.good + this.needlePositionState.great), this.rad(360 - this.needlePositionState.good - this.needlePositionState.great), counterClockwise);
+    this.ctx.arc(
+      x,
+      y,
+      radius,
+      this.rad(
+        180 + this.needlePositionState.good + this.needlePositionState.great,
+      ),
+      this.rad(
+        360 - this.needlePositionState.good - this.needlePositionState.great,
+      ),
+      counterClockwise,
+    );
     this.ctx.lineWidth = 2;
     this.ctx.strokeStyle = props.color;
     this.ctx.stroke();
     //GREAT
     this.ctx.beginPath();
-    this.ctx.arc(x, y, radius, this.rad(-this.needlePositionState.great), this.rad(this.needlePositionState.great), counterClockwise);
+    this.ctx.arc(
+      x,
+      y,
+      radius,
+      this.rad(-this.needlePositionState.great),
+      this.rad(this.needlePositionState.great),
+      counterClockwise,
+    );
     this.ctx.lineWidth = offsetSize * 2 + 1;
     this.ctx.strokeStyle = props.color;
     this.ctx.stroke();
     this.ctx.beginPath();
-    this.ctx.arc(x, y, radius, this.rad(180 - this.needlePositionState.great), this.rad(180 + this.needlePositionState.great), counterClockwise);
+    this.ctx.arc(
+      x,
+      y,
+      radius,
+      this.rad(180 - this.needlePositionState.great),
+      this.rad(180 + this.needlePositionState.great),
+      counterClockwise,
+    );
     this.ctx.lineWidth = offsetSize * 2 + 1;
     this.ctx.strokeStyle = props.color;
     this.ctx.stroke();
     //GOOD TOP
     this.ctx.beginPath();
-    this.ctx.arc(x, y, radius - offsetSize, this.rad(-this.needlePositionState.great - this.needlePositionState.good), this.rad(+this.needlePositionState.great + this.needlePositionState.good), counterClockwise);
+    this.ctx.arc(
+      x,
+      y,
+      radius - offsetSize,
+      this.rad(-this.needlePositionState.great - this.needlePositionState.good),
+      this.rad(+this.needlePositionState.great + this.needlePositionState.good),
+      counterClockwise,
+    );
     this.ctx.lineWidth = 2;
     this.ctx.strokeStyle = props.color;
     this.ctx.stroke();
     this.ctx.beginPath();
-    this.ctx.arc(x, y, radius - offsetSize, this.rad(180 - this.needlePositionState.great - this.needlePositionState.good), this.rad(180 + this.needlePositionState.great + this.needlePositionState.good), counterClockwise);
+    this.ctx.arc(
+      x,
+      y,
+      radius - offsetSize,
+      this.rad(
+        180 - this.needlePositionState.great - this.needlePositionState.good,
+      ),
+      this.rad(
+        180 + this.needlePositionState.great + this.needlePositionState.good,
+      ),
+      counterClockwise,
+    );
     this.ctx.lineWidth = 2;
     this.ctx.strokeStyle = props.color;
     this.ctx.stroke();
     //GOOD BOTTOM
     this.ctx.beginPath();
-    this.ctx.arc(x, y, radius + offsetSize, this.rad(-this.needlePositionState.great - this.needlePositionState.good), this.rad(+this.needlePositionState.great + this.needlePositionState.good), counterClockwise);
+    this.ctx.arc(
+      x,
+      y,
+      radius + offsetSize,
+      this.rad(-this.needlePositionState.great - this.needlePositionState.good),
+      this.rad(+this.needlePositionState.great + this.needlePositionState.good),
+      counterClockwise,
+    );
     this.ctx.lineWidth = 2;
     this.ctx.strokeStyle = props.color;
     this.ctx.stroke();
     this.ctx.beginPath();
-    this.ctx.arc(x, y, radius + offsetSize, this.rad(180 - this.needlePositionState.great - this.needlePositionState.good), this.rad(180 + this.needlePositionState.great + this.needlePositionState.good), counterClockwise);
+    this.ctx.arc(
+      x,
+      y,
+      radius + offsetSize,
+      this.rad(
+        180 - this.needlePositionState.great - this.needlePositionState.good,
+      ),
+      this.rad(
+        180 + this.needlePositionState.great + this.needlePositionState.good,
+      ),
+      counterClockwise,
+    );
     this.ctx.lineWidth = 2;
     this.ctx.strokeStyle = props.color;
     this.ctx.stroke();
     //GOOD BORDER TOP
     this.ctx.beginPath();
-    this.ctx.arc(x, y, radius, this.rad(-this.needlePositionState.great - this.needlePositionState.good) - 0.02, this.rad(-this.needlePositionState.great - this.needlePositionState.good), counterClockwise);
+    this.ctx.arc(
+      x,
+      y,
+      radius,
+      this.rad(
+        -this.needlePositionState.great - this.needlePositionState.good,
+      ) - 0.02,
+      this.rad(-this.needlePositionState.great - this.needlePositionState.good),
+      counterClockwise,
+    );
     this.ctx.lineWidth = offsetSize * 2 + 1;
     this.ctx.strokeStyle = props.color;
     this.ctx.stroke();
     this.ctx.beginPath();
-    this.ctx.arc(x, y, radius, this.rad(180 - this.needlePositionState.great - this.needlePositionState.good) - 0.02, this.rad(180 - this.needlePositionState.great - this.needlePositionState.good), counterClockwise);
+    this.ctx.arc(
+      x,
+      y,
+      radius,
+      this.rad(
+        180 - this.needlePositionState.great - this.needlePositionState.good,
+      ) - 0.02,
+      this.rad(
+        180 - this.needlePositionState.great - this.needlePositionState.good,
+      ),
+      counterClockwise,
+    );
     this.ctx.lineWidth = offsetSize * 2 + 1;
     this.ctx.strokeStyle = props.color;
     this.ctx.stroke();
     //GOOD BORDER BOTTOM
     this.ctx.beginPath();
-    this.ctx.arc(x, y, radius, this.rad(+this.needlePositionState.great + this.needlePositionState.good) - 0.02, this.rad(+this.needlePositionState.great + this.needlePositionState.good), counterClockwise);
+    this.ctx.arc(
+      x,
+      y,
+      radius,
+      this.rad(
+        +this.needlePositionState.great + this.needlePositionState.good,
+      ) - 0.02,
+      this.rad(+this.needlePositionState.great + this.needlePositionState.good),
+      counterClockwise,
+    );
     this.ctx.lineWidth = offsetSize * 2 + 1;
     this.ctx.strokeStyle = props.color;
     this.ctx.stroke();
     this.ctx.beginPath();
-    this.ctx.arc(x, y, radius, this.rad(180 + this.needlePositionState.great + this.needlePositionState.good) - 0.02, this.rad(180 + this.needlePositionState.great + this.needlePositionState.good), counterClockwise);
+    this.ctx.arc(
+      x,
+      y,
+      radius,
+      this.rad(
+        180 + this.needlePositionState.great + this.needlePositionState.good,
+      ) - 0.02,
+      this.rad(
+        180 + this.needlePositionState.great + this.needlePositionState.good,
+      ),
+      counterClockwise,
+    );
     this.ctx.lineWidth = offsetSize * 2 + 1;
     this.ctx.strokeStyle = props.color;
     this.ctx.stroke();
     return;
   }
 
-  async animateWiggle(props: {
-    onSuccess: Function,
-    startTime: number,
-    startPos: number,
-  }) {
+  async animateWiggle(props) {
     props.startPos = this.fixAngle(props.startPos);
     const fps = this.fps;
     const ref = this;
@@ -744,29 +1028,49 @@ class Skillcheck {
     ref.needlePositionState.startTime = props.startTime;
     ref.needlePositionState.hasTuched = false;
     ref.clickEvent = false;
-    let fixPos = props.startPos-90;
+    let fixPos = props.startPos - 90;
     fixPos = ref.fixAngle(fixPos);
     let shouldAreaA = true;
-    if (ref.needlePositionState.clockWise && this.isAngleInBetween(fixPos, -ref.needlePositionState.great - ref.needlePositionState.good, 180 - ref.needlePositionState.great - ref.needlePositionState.good)) {
+    if (
+      ref.needlePositionState.clockWise &&
+      this.isAngleInBetween(
+        fixPos,
+        -ref.needlePositionState.great - ref.needlePositionState.good,
+        180 - ref.needlePositionState.great - ref.needlePositionState.good,
+      )
+    ) {
       shouldAreaA = false;
-    } else if (!ref.needlePositionState.clockWise && this.isAngleInBetween(fixPos, 180 + ref.needlePositionState.great + ref.needlePositionState.good, ref.needlePositionState.great + ref.needlePositionState.good)) {
+    } else if (
+      !ref.needlePositionState.clockWise &&
+      this.isAngleInBetween(
+        fixPos,
+        180 + ref.needlePositionState.great + ref.needlePositionState.good,
+        ref.needlePositionState.great + ref.needlePositionState.good,
+      )
+    ) {
       shouldAreaA = false;
     }
-    animate()
+    animate();
 
     async function animate() {
       if (!ref.animate) {
         return ref.setDisplay(false);
       }
-      if (ref.state.playStatus !== 'start') {
+      if (ref.state.playStatus !== "start") {
         return ref.setDisplay(false);
       }
       const rotationTime = 1150;
       let angle =
-        props.startPos + ref.needlePositionState.speed * ((Date.now() - ref.needlePositionState.startTime) / (rotationTime / 360));
+        props.startPos +
+        ref.needlePositionState.speed *
+          ((Date.now() - ref.needlePositionState.startTime) /
+            (rotationTime / 360));
       if (ref.needlePositionState.clockWise == false) {
         angle =
-          props.startPos - ref.needlePositionState.speed * ((Date.now() - ref.needlePositionState.startTime) / (rotationTime / 360));
+          props.startPos -
+          ref.needlePositionState.speed *
+            ((Date.now() - ref.needlePositionState.startTime) /
+              (rotationTime / 360));
       }
       ref.ctx.clearRect(0, 0, ref.width, ref.height);
       ref.ctx.putImageData(canvasSave, 0, 0);
@@ -789,16 +1093,59 @@ class Skillcheck {
 
       if (ref.clickEvent) {
         ref.animate = false;
-        if ((shouldAreaA && ref.isAngleInBetween(angle, -ref.needlePositionState.great, ref.needlePositionState.great)) || (!shouldAreaA && ref.isAngleInBetween(angle, 180 - ref.needlePositionState.great, 180 + ref.needlePositionState.great))) {
+        if (
+          (shouldAreaA &&
+            ref.isAngleInBetween(
+              angle,
+              -ref.needlePositionState.great,
+              ref.needlePositionState.great,
+            )) ||
+          (!shouldAreaA &&
+            ref.isAngleInBetween(
+              angle,
+              180 - ref.needlePositionState.great,
+              180 + ref.needlePositionState.great,
+            ))
+        ) {
           ref.grease = Date.now();
           return props.onSuccess("great", angle);
-        } else if ((shouldAreaA && ref.isAngleInBetween(angle, -ref.needlePositionState.great - ref.needlePositionState.good, ref.needlePositionState.great + ref.needlePositionState.good)) || (!shouldAreaA && ref.isAngleInBetween(angle, 180 - ref.needlePositionState.great - ref.needlePositionState.good, 180 + ref.needlePositionState.great + ref.needlePositionState.good))) {
+        } else if (
+          (shouldAreaA &&
+            ref.isAngleInBetween(
+              angle,
+              -ref.needlePositionState.great - ref.needlePositionState.good,
+              ref.needlePositionState.great + ref.needlePositionState.good,
+            )) ||
+          (!shouldAreaA &&
+            ref.isAngleInBetween(
+              angle,
+              180 -
+                ref.needlePositionState.great -
+                ref.needlePositionState.good,
+              180 +
+                ref.needlePositionState.great +
+                ref.needlePositionState.good,
+            ))
+        ) {
           return props.onSuccess("good", angle);
         } else {
           return props.onSuccess("fail", angle);
         }
       }
-      if ((shouldAreaA && ref.isAngleInBetween(angle, -ref.needlePositionState.great - ref.needlePositionState.good, ref.needlePositionState.great + ref.needlePositionState.good)) || (!shouldAreaA && ref.isAngleInBetween(angle, 180 - ref.needlePositionState.great - ref.needlePositionState.good, 180 + ref.needlePositionState.great + ref.needlePositionState.good))) {
+      if (
+        (shouldAreaA &&
+          ref.isAngleInBetween(
+            angle,
+            -ref.needlePositionState.great - ref.needlePositionState.good,
+            ref.needlePositionState.great + ref.needlePositionState.good,
+          )) ||
+        (!shouldAreaA &&
+          ref.isAngleInBetween(
+            angle,
+            180 - ref.needlePositionState.great - ref.needlePositionState.good,
+            180 + ref.needlePositionState.great + ref.needlePositionState.good,
+          ))
+      ) {
         ref.needlePositionState.hasTuched = true;
       } else if (ref.needlePositionState.hasTuched === true) {
         return props.onSuccess("fail", angle);

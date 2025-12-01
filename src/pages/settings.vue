@@ -1,99 +1,97 @@
-<script setup lang="ts">
-
-import {onMounted, ref} from "vue";
+<script setup>
+import { onMounted, ref } from "vue";
 import GameState from "../plugins/store/gameState";
-import {isConnected, PSC, waitInput, XBOX} from "../plugins/controller";
-import {useToast} from "vue-toast-notification";
+import { isConnected, PSC, waitInput, XBOX } from "../plugins/controller";
+import { useToast } from "vue-toast-notification";
 
-const settings: any = ref({
+const settings = ref({
   keyboard: {
-    keys: []
+    keys: [],
   },
   controller: {
-    keys: []
+    keys: [],
   },
-})
-const keyboardModel = ref(false)
-const controllerModal = ref(false)
-let callback: Function | null = null;
-const event = function (e: KeyboardEvent) {
+});
+const keyboardModel = ref(false);
+const controllerModal = ref(false);
+let callback = null;
+const event = function (e) {
   if (keyboardModel.value) {
-    callback(e.code)
-    window.removeEventListener('keydown', event)
+    callback(e.code);
+    window.removeEventListener("keydown", event);
     save();
   }
+};
+
+function updateKeyboard(key) {
+  keyboardModel.value = true;
+  callback = (s) => {
+    settings.value.keyboard[key] = s;
+    keyboardModel.value = false;
+  };
+  window.addEventListener("keydown", event);
 }
 
-function updateKeyboard(key: string) {
-  keyboardModel.value = true
-  callback = (s: string) => {
-    settings.value.keyboard[key] = s
-    keyboardModel.value = false
-  }
-  window.addEventListener('keydown', event)
-}
-
-async function updateController(key: string) {
-  controllerModal.value = true
+async function updateController(key) {
+  controllerModal.value = true;
   let code = await waitInput();
   if (controllerModal.value === false) {
-    return
+    return;
   }
-  settings.value.controller[key] = code[0]
-  controllerModal.value = false
+  settings.value.controller[key] = code[0];
+  controllerModal.value = false;
 }
 
 async function addController() {
   if (!isConnected()) {
-    return useToast().error('Please connect the controller first, if it is connected press a button on the controller to detect it');
+    return useToast().error(
+      "Please connect the controller first, if it is connected press a button on the controller to detect it",
+    );
   }
-  controllerModal.value = true
+  controllerModal.value = true;
   let code = await waitInput();
   if (controllerModal.value === false) {
-    return
+    return;
   }
   if (!settings.value.controller.keys.includes(code[0])) {
-    settings.value.controller.keys.push(code[0])
+    settings.value.controller.keys.push(code[0]);
   }
-  controllerModal.value = false
+  controllerModal.value = false;
 }
 
 function changeMouseEvent() {
   if (settings.value.specialMouse) {
-    history.pushState(null, null, location.href)
+    history.pushState(null, null, location.href);
     window.onpopstate = function () {
-      history.go(1)
-    }
+      history.go(1);
+    };
   } else {
-    window.onpopstate = function () {
-    }
+    window.onpopstate = function () {};
   }
-  save()
+  save();
 }
 
 function addKeyboard() {
-
-  keyboardModel.value = true
-  callback = (key: string) => {
+  keyboardModel.value = true;
+  callback = (key) => {
     if (!settings.value.keyboard.keys.includes(key)) {
-      settings.value.keyboard.keys.push(key)
+      settings.value.keyboard.keys.push(key);
     }
-    keyboardModel.value = false
-  }
-  window.addEventListener('keydown', event)
+    keyboardModel.value = false;
+  };
+  window.addEventListener("keydown", event);
 }
 function cancelKeyboard() {
-  keyboardModel.value = false
-  window.removeEventListener('keydown', event)
+  keyboardModel.value = false;
+  window.removeEventListener("keydown", event);
 }
 function save() {
-  GameState.saveState()
+  GameState.saveState();
 }
 
 onMounted(() => {
   settings.value = GameState.getState().settings;
-})
-
+});
 </script>
 
 <template>
@@ -134,31 +132,56 @@ onMounted(() => {
     </v-dialog>
     <h2 class="text-center mb-5">Settings</h2>
     <div class="d-flex justify-center">
-      <v-card style="width: 80vw; min-width: 300px;">
+      <v-card style="width: 80vw; min-width: 300px">
         <v-card-text>
           <h3 class="text-center mb-5">Animation settings</h3>
           <v-row>
             <v-col cols="12" md="4">
-              <v-slider v-model="settings.fps" label="SkillCheck FPS" thumb-label min="15" max="120"
-                        color="light-blue-darken-1" @update:model-value="save">
+              <v-slider
+                v-model="settings.fps"
+                label="SkillCheck FPS"
+                thumb-label
+                min="15"
+                max="120"
+                color="light-blue-darken-1"
+                @update:model-value="save"
+              >
                 <template v-slot:append>
                   <p>{{ parseInt(settings.fps) }}</p>
                 </template>
               </v-slider>
             </v-col>
             <v-col cols="12" md="4">
-              <v-slider v-model="settings.sound" label="SkillCheck sound %" thumb-label min="0" max="100"
-                        color="light-green-lighten-2" @update:model-value="save"></v-slider>
+              <v-slider
+                v-model="settings.sound"
+                label="SkillCheck sound %"
+                thumb-label
+                min="0"
+                max="100"
+                color="light-green-lighten-2"
+                @update:model-value="save"
+              ></v-slider>
             </v-col>
             <v-col cols="12" md="4">
-              <v-slider v-model="settings.surround" label="Surround Sounds %" thumb-label min="0" max="100"
-                        color="lime-darken-3" @update:model-value="save"></v-slider>
+              <v-slider
+                v-model="settings.surround"
+                label="Surround Sounds %"
+                thumb-label
+                min="0"
+                max="100"
+                color="lime-darken-3"
+                @update:model-value="save"
+              ></v-slider>
             </v-col>
           </v-row>
           <h3 class="text-center mb-5">Keybinds</h3>
           <v-row>
             <v-col cols="12" md="3">
-              <v-checkbox label="Mouse L/R event" v-model="settings.mouse" @update:model-value="save"></v-checkbox>
+              <v-checkbox
+                label="Mouse L/R event"
+                v-model="settings.mouse"
+                @update:model-value="save"
+              ></v-checkbox>
             </v-col>
             <v-col cols="12" md="3">
               <v-tooltip
@@ -166,30 +189,55 @@ onMounted(() => {
                 width="400px"
               >
                 <template v-slot:activator="{ props }">
-                  <v-checkbox label="Mouse M4/M5 event" v-model="settings.specialMouse"
-                              @update:model-value="changeMouseEvent" v-bind="props"></v-checkbox>
+                  <v-checkbox
+                    label="Mouse M4/M5 event"
+                    v-model="settings.specialMouse"
+                    @update:model-value="changeMouseEvent"
+                    v-bind="props"
+                  ></v-checkbox>
                 </template>
               </v-tooltip>
             </v-col>
             <v-col cols="12" md="3">
-              <v-checkbox label="Mouse wheel event" v-model="settings.wheel" @update:model-value="save"></v-checkbox>
+              <v-checkbox
+                label="Mouse wheel event"
+                v-model="settings.wheel"
+                @update:model-value="save"
+              ></v-checkbox>
             </v-col>
             <v-col cols="12" md="3">
-              <v-checkbox label="Mobile touch screen event" v-model="settings.click"
-                          @update:model-value="save"></v-checkbox>
+              <v-checkbox
+                label="Mobile touch screen event"
+                v-model="settings.click"
+                @update:model-value="save"
+              ></v-checkbox>
             </v-col>
           </v-row>
           <v-row>
             <v-col cols="12" md="6">
               <h3 class="text-center mb-5">Keyboard</h3>
               <v-list class="mb-5">
-                <v-list-item prepend-icon="mdi-swap-horizontal" @click="updateKeyboard('startKey')">
-                  <v-list-item-title>{{ settings.keyboard.startKey }}</v-list-item-title>
-                  <v-list-item-subtitle>Keyboard Start/Resume Game key</v-list-item-subtitle>
+                <v-list-item
+                  prepend-icon="mdi-swap-horizontal"
+                  @click="updateKeyboard('startKey')"
+                >
+                  <v-list-item-title>{{
+                    settings.keyboard.startKey
+                  }}</v-list-item-title>
+                  <v-list-item-subtitle
+                    >Keyboard Start/Resume Game key</v-list-item-subtitle
+                  >
                 </v-list-item>
-                <v-list-item prepend-icon="mdi-swap-horizontal" @click="updateKeyboard('stopKey')">
-                  <v-list-item-title>{{ settings.keyboard.stopKey }}</v-list-item-title>
-                  <v-list-item-subtitle>Keyboard Stop/Pause Game key</v-list-item-subtitle>
+                <v-list-item
+                  prepend-icon="mdi-swap-horizontal"
+                  @click="updateKeyboard('stopKey')"
+                >
+                  <v-list-item-title>{{
+                    settings.keyboard.stopKey
+                  }}</v-list-item-title>
+                  <v-list-item-subtitle
+                    >Keyboard Stop/Pause Game key</v-list-item-subtitle
+                  >
                 </v-list-item>
               </v-list>
               <v-select
@@ -202,7 +250,7 @@ onMounted(() => {
                   <v-chip v-if="index < 6">
                     <span>{{ item.title }}</span>
                   </v-chip>
-                  <span v-else-if="index===6">+{{ index - 5 }}</span>
+                  <span v-else-if="index === 6">+{{ index - 5 }}</span>
                 </template>
                 <template v-slot:append>
                   <v-btn icon variant="flat" @click="addKeyboard">
@@ -210,21 +258,45 @@ onMounted(() => {
                   </v-btn>
                 </template>
                 <template v-slot:item="{ item }">
-                  <v-list-item :title="item.title" prepend-icon="mdi-trash-can"
-                               @click="settings.keyboard.keys.splice(settings.keyboard.keys.indexOf(item.title), 1)"></v-list-item>
+                  <v-list-item
+                    :title="item.title"
+                    prepend-icon="mdi-trash-can"
+                    @click="
+                      settings.keyboard.keys.splice(
+                        settings.keyboard.keys.indexOf(item.title),
+                        1,
+                      )
+                    "
+                  ></v-list-item>
                 </template>
               </v-select>
             </v-col>
             <v-col cols="12" md="6">
               <h3 class="text-center mb-5">Controller</h3>
               <v-list class="mb-5">
-                <v-list-item prepend-icon="mdi-swap-horizontal" @click="updateController('startKey')">
-                  <v-list-item-title>{{ XBOX[settings.controller.startKey] }} / {{ PSC[settings.controller.startKey] }}</v-list-item-title>
-                  <v-list-item-subtitle>Controller Start/Resume Game key</v-list-item-subtitle>
+                <v-list-item
+                  prepend-icon="mdi-swap-horizontal"
+                  @click="updateController('startKey')"
+                >
+                  <v-list-item-title
+                    >{{ XBOX[settings.controller.startKey] }} /
+                    {{ PSC[settings.controller.startKey] }}</v-list-item-title
+                  >
+                  <v-list-item-subtitle
+                    >Controller Start/Resume Game key</v-list-item-subtitle
+                  >
                 </v-list-item>
-                <v-list-item prepend-icon="mdi-swap-horizontal" @click="updateController('stopKey')">
-                  <v-list-item-title>{{ XBOX[settings.controller.stopKey] }} / {{ PSC[settings.controller.stopKey] }}</v-list-item-title>
-                  <v-list-item-subtitle>Controller Stop/Pause Game key</v-list-item-subtitle>
+                <v-list-item
+                  prepend-icon="mdi-swap-horizontal"
+                  @click="updateController('stopKey')"
+                >
+                  <v-list-item-title
+                    >{{ XBOX[settings.controller.stopKey] }} /
+                    {{ PSC[settings.controller.stopKey] }}</v-list-item-title
+                  >
+                  <v-list-item-subtitle
+                    >Controller Stop/Pause Game key</v-list-item-subtitle
+                  >
                 </v-list-item>
               </v-list>
               <v-select
@@ -235,9 +307,12 @@ onMounted(() => {
               >
                 <template v-slot:selection="{ item, index }">
                   <v-chip v-if="index < 6">
-                    <span>{{ XBOX[parseInt(item.title)] }} / {{ PSC[parseInt(item.title)] }}</span>
+                    <span
+                      >{{ XBOX[parseInt(item.title)] }} /
+                      {{ PSC[parseInt(item.title)] }}</span
+                    >
                   </v-chip>
-                  <span v-else-if="index===6">+{{ index - 5 }}</span>
+                  <span v-else-if="index === 6">+{{ index - 5 }}</span>
                 </template>
                 <template v-slot:append>
                   <v-btn icon variant="flat" @click="addController">
@@ -245,11 +320,18 @@ onMounted(() => {
                   </v-btn>
                 </template>
                 <template v-slot:item="{ item }">
-                  <v-list-item prepend-icon="mdi-trash-can"
-                               @click="settings.controller.keys.splice(settings.controller.keys.indexOf(parseInt(item.title)), 1)">
-                    <v-list-item-title>{{ XBOX[parseInt(item.title)] }} / {{
-                        PSC[parseInt(item.title)]
-                      }}
+                  <v-list-item
+                    prepend-icon="mdi-trash-can"
+                    @click="
+                      settings.controller.keys.splice(
+                        settings.controller.keys.indexOf(parseInt(item.title)),
+                        1,
+                      )
+                    "
+                  >
+                    <v-list-item-title
+                      >{{ XBOX[parseInt(item.title)] }} /
+                      {{ PSC[parseInt(item.title)] }}
                     </v-list-item-title>
                   </v-list-item>
                 </template>
@@ -257,13 +339,10 @@ onMounted(() => {
             </v-col>
           </v-row>
         </v-card-text>
-        <v-card-actions>
-        </v-card-actions>
+        <v-card-actions> </v-card-actions>
       </v-card>
     </div>
   </div>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>

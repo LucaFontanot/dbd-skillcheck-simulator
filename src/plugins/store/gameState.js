@@ -1,92 +1,8 @@
 import Static from "@/plugins/store/static";
-import { defineStore } from 'pinia'
+import { defineStore } from "pinia";
 
 class GameState {
-  private gameState: {
-    settings: {
-      mouse: boolean;
-      keyboard: { startKey: string; stopKey: string; keys: any[] };
-      controller: { startKey: number; stopKey: number; keys: any[] };
-      wheel: boolean;
-      sound: number;
-      fps: number;
-      specialMouse: boolean;
-      click: boolean;
-      surround: number
-    };
-    stats: {
-      generators: number;
-      generatorsDay: {};
-      generatorsTime: number;
-      generatorsTimeDay: {};
-      generatorGoodSkillChecks: number;
-      generatorGreatSkillChecks: number;
-      generatorSkillCheckFails: number;
-      generatorGoodSkillChecksDay: {};
-      generatorGreatSkillChecksDay: {};
-      generatorSkillCheckFailsDay: {};
-      generatorsWithPerks: {};
-      generatorsWithPerksDay: {};
-      generatorsWithEffects: {};
-      generatorsWithEffectsDay: {};
-      generatorGoodSkillChecksPerks: {};
-      generatorGreatSkillChecksPerks: {};
-      generatorSkillCheckFailsPerks: {};
-      generatorGoodSkillChecksEffects: {};
-      generatorGreatSkillChecksEffects: {};
-      generatorSkillCheckFailsEffects: {};
-      generatorGoodSkillChecksPerksDay: {};
-      generatorGreatSkillChecksPerksDay: {};
-      generatorSkillCheckFailsPerksDay: {};
-      generatorGoodSkillChecksEffectsDay: {};
-      generatorGreatSkillChecksEffectsDay: {};
-      generatorSkillCheckFailsEffectsDay: {};
-
-      ds: number;
-      dsDay: {};
-      dsEffects: {};
-      dsDayEffects: {};
-      dsFail: number;
-      dsFailDay: {};
-      dsFailEffects: {};
-      dsFailDayEffects: {};
-
-      gliph: number;
-      gliphDay: {};
-      gliphEffects: {};
-      gliphDayEffects: {};
-      gliphFail: number;
-      gliphFailDay: {};
-      gliphSuccess: number;
-      gliphSuccessDay: {};
-      gliphSuccessEffects: {};
-      gliphSuccessDayEffects: {};
-      gliphFailEffects: {};
-      gliphFailDayEffects: {};
-
-    };
-    modifiers: {
-      frequency: number;
-      speed: number;
-      gentime: number;
-      advertise: string;
-      advertisetime: number;
-      dstime: number;
-      v: number
-      glyphbasesize: number;
-      glyphduration: number;
-      wiggleGreat: number;
-      wiggleGood: number;
-      wiggleDuration: number;
-    };
-    perks: {};
-    effects: {};
-    currentMode: string,
-    playStatus: string,
-  };
-  pinia = null;
-
-  updateObjProps(obj: any, props: any) {
+  updateObjProps(obj, props) {
     for (const key in props) {
       if (typeof obj[key] === "undefined") continue;
       if (typeof props[key] === "object" && !Array.isArray(props[key])) {
@@ -99,7 +15,7 @@ class GameState {
   getStatics() {
     return Static;
   }
-  loadGameState(gst: any) {
+  loadGameState(gst) {
     const storage = localStorage.getItem("gameState");
     this.updateObjProps(gst, JSON.parse(storage));
   }
@@ -108,7 +24,7 @@ class GameState {
   }
   getState() {
     if (!this.pinia) {
-      this.pinia = defineStore('gamestate', {
+      this.pinia = defineStore("gamestate", {
         state: () => {
           return this.gameState;
         },
@@ -167,18 +83,17 @@ class GameState {
         gliphSuccessDayEffects: {},
         gliphFailEffects: {},
         gliphFailDayEffects: {},
-
       },
       currentMode: "generator",
       playStatus: "stop",
       modifiers: JSON.parse(JSON.stringify(this.getStatics().modifiers)),
-      effects:{
+      effects: {
         madness: {
-          active: false
+          active: false,
         },
         correctiveaction: {
-          active: false
-        }
+          active: false,
+        },
       },
       perks: {
         lullaby: {
@@ -191,14 +106,14 @@ class GameState {
         },
         ruin: {
           active: false,
-          tier:3
+          tier: 3,
         },
         coulrophobia: {
           active: false,
         },
         unnervingPresence: {
           active: false,
-          tier:3
+          tier: 3,
         },
         deadline: {
           active: false,
@@ -212,17 +127,17 @@ class GameState {
         },
         fasttrack: {
           active: false,
-          tokens: 27
+          tokens: 27,
         },
         hyperfocus: {
           active: false,
-          tokens: 0
+          tokens: 0,
         },
         mercilessStorm: {
           active: false,
-        }
+        },
       },
-      settings:{
+      settings: {
         fps: 120,
         mouse: true,
         specialMouse: false,
@@ -230,18 +145,19 @@ class GameState {
         click: true,
         sound: 100,
         surround: 100,
-        keyboard:{
+        keyboard: {
           startKey: "Enter",
           stopKey: "Enter",
-          keys:["Space"],
+          keys: ["Space"],
         },
-        controller:{
+        controller: {
           startKey: 2,
           stopKey: 2,
-          keys:[1],
+          keys: [1],
         },
-      }
-    }
+      },
+    };
+    this.pinia = null;
     this.loadGameState(this.gameState);
   }
 }

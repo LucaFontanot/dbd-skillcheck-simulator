@@ -1,60 +1,63 @@
-<script setup lang="ts">
-import {onMounted, ref} from "vue";
+<script setup>
+import { onMounted, ref } from "vue";
 import GameState from "../plugins/store/gameState";
 import Skillcheck from "../plugins/drawer/skillcheck";
 import Assets from "../plugins/drawer/assets";
-import {addGlyph, addGlyphFail, addGlyphSuccess} from "../plugins/store/statsManager";
+import { addGlyph } from "../plugins/store/statsManager";
 
-let state: any = ref({});
+let state = ref({});
 let skillCheck = ref(null);
 const maxTicks = ref(1000);
 const tickTime = ref(500);
 const ticks = ref(0);
 let d = null;
 
-async function getAudio(name: string): Promise<HTMLAudioElement> {
+async function getAudio(name) {
   // eslint-disable-next-line no-async-promise-executor
   return new Promise(async (resolve, reject) => {
     const audio = new Audio();
     audio.oncanplay = function () {
       resolve(audio);
-    }
+    };
     audio.src = await Assets.getAsset(name);
   });
 }
 
-function stopGame(status=true) {
+function stopGame(status = true) {
   if (d) {
     d.animate = false;
     d.setDisplay(false);
   }
-  if (status) state.value.playStatus = 'stop';
-  else state.value.playStatus = 'softStop';
+  if (status) state.value.playStatus = "stop";
+  else state.value.playStatus = "softStop";
 }
 
 function tick() {
-  if (state.value.playStatus === 'start') {
+  if (state.value.playStatus === "start") {
     ticks.value += tickTime.value;
     if (ticks.value >= maxTicks.value) {
       stopGame(false);
-      addGlyph(state.value.effects)
+      addGlyph(state.value.effects);
       setTimeout(() => {
-        if (state.value.playStatus === 'softStop') startGame();
+        if (state.value.playStatus === "softStop") startGame();
       }, 2000);
       return;
     }
   }
-  if (state.value.playStatus === 'stop' || state.value.playStatus === 'softStop') {
+  if (
+    state.value.playStatus === "stop" ||
+    state.value.playStatus === "softStop"
+  ) {
     return;
   }
   setTimeout(tick, tickTime.value);
 }
 
 function startGame() {
-  if (state.value.playStatus === 'start') {
+  if (state.value.playStatus === "start") {
     return;
   }
-  state.value.playStatus = 'start';
+  state.value.playStatus = "start";
   ticks.value = 0;
   let clockWise = true;
   let goodSize = state.value.modifiers.wiggleGood;
@@ -70,30 +73,33 @@ function startGame() {
       greatSize: greatSize,
       goodSize: goodSize,
       clockwise: clockWise,
-      color: "#fff"
-    })
+      color: "#fff",
+    });
     let startTime = Date.now() - state.value.modifiers.advertisetime;
-    let onSuccess = (status: string, angle: number) => {
+    let onSuccess = (status, angle) => {
       d.playStatusSound(status);
       let color = "#fff";
       if (status === "fail") {
         d.shake(300);
         color = "#f00";
         combo = 0;
-        getAudio('skillcheck_fail').then((audio) => {
+        getAudio("skillcheck_fail").then((audio) => {
           audio.volume = state.value.settings.surround / 100;
           audio.play();
         });
       } else if (status === "good") {
         clockWise = !clockWise;
-        combo =0;
-      }else if (status === "great") {
+        combo = 0;
+      } else if (status === "great") {
         color = "#ffe600";
         clockWise = !clockWise;
         combo++;
       }
-      let thisgreatSize = Math.min(greatSize,Math.max(4, greatSize - combo*0.5));
-      let thisgoodSize = Math.min(goodSize+4, goodSize + combo*0.5);
+      let thisgreatSize = Math.min(
+        greatSize,
+        Math.max(4, greatSize - combo * 0.5),
+      );
+      let thisgoodSize = Math.min(goodSize + 4, goodSize + combo * 0.5);
       d.drawWiggleSkillcheck({
         effects: null,
         perks: {},
@@ -102,50 +108,64 @@ function startGame() {
         greatSize: thisgreatSize,
         goodSize: thisgoodSize,
         clockwise: clockWise,
-        color: color
-      })
+        color: color,
+      });
       d.animateWiggle({
         onSuccess: onSuccess,
         startTime: Date.now(),
-        startPos: angle + 90
+        startPos: angle + 90,
       });
-    }
+    };
     d.animateWiggle({
       onSuccess: onSuccess,
       startTime: startTime,
-      startPos: 0
+      startPos: 0,
     });
     setTimeout(() => {
       tick();
     }, state.value.modifiers.advertisetime);
   }, 300);
-
 }
 
 function pauseGame() {
-  state.value.playStatus = 'stop';
+  state.value.playStatus = "stop";
 }
 
 function resumeGame() {
-  state.value.playStatus = 'start';
+  state.value.playStatus = "start";
 }
 
 onMounted(() => {
   state.value = GameState.getState();
-  state.value.playStatus = 'stop';
+  state.value.playStatus = "stop";
   maxTicks.value = state.value.modifiers.wiggleDuration;
-})
+});
 </script>
 
 <template>
   <div>
-    <canvas ref="skillCheck" class="skillcheck hidden" height="200" width="200"></canvas>
+    <canvas
+      ref="skillCheck"
+      class="skillcheck hidden"
+      height="200"
+      width="200"
+    ></canvas>
     <modifiers></modifiers>
     <perkshud :show-effects="true" :show-perks="false"></perkshud>
-    <startstop v-model="state.playStatus" :on-start="startGame" :on-stop="stopGame" :on-pause="pauseGame"
-               :on-resume="resumeGame"></startstop>
+    <startstop
+      v-model="state.playStatus"
+      :on-start="startGame"
+      :on-stop="stopGame"
+      :on-pause="pauseGame"
+      :on-resume="resumeGame"
+    ></startstop>
     <div class="progress" v-if="state.playStatus === 'start'">
-      <v-progress-linear color="grey-lighten-4" :model-value="ticks" :max="maxTicks" :height="12"></v-progress-linear>
+      <v-progress-linear
+        color="grey-lighten-4"
+        :model-value="ticks"
+        :max="maxTicks"
+        :height="12"
+      ></v-progress-linear>
     </div>
   </div>
 </template>
@@ -161,7 +181,9 @@ onMounted(() => {
 .hidden {
   visibility: hidden;
   opacity: 0;
-  transition: visibility 0s 0.1s, opacity 0.1s linear;
+  transition:
+    visibility 0s 0.1s,
+    opacity 0.1s linear;
 }
 
 .visible {
@@ -176,19 +198,19 @@ onMounted(() => {
 
 @keyframes horizontal-shaking {
   0% {
-    transform: translateX(0)
+    transform: translateX(0);
   }
   25% {
-    transform: translateX(5px)
+    transform: translateX(5px);
   }
   50% {
-    transform: translateX(-5px)
+    transform: translateX(-5px);
   }
   75% {
-    transform: translateX(5px)
+    transform: translateX(5px);
   }
   100% {
-    transform: translateX(0)
+    transform: translateX(0);
   }
 }
 

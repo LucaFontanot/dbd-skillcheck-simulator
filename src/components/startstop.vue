@@ -1,26 +1,50 @@
-<script setup lang="ts">
+<script setup>
 defineProps({
   onStart: Function,
   onStop: Function,
   onPause: Function,
   onResume: Function,
-})
-const model = defineModel()
+});
+const model = defineModel();
 </script>
 
 <template>
   <div class="fix">
     <div class="d-flex">
-      <v-btn variant="outlined" @click="onStart" prepend-icon="mdi-play" class="ma-3" v-if="model==='stop' || model===''">
+      <v-btn
+        variant="outlined"
+        @click="onStart"
+        prepend-icon="mdi-play"
+        class="ma-3"
+        v-if="model === 'stop' || model === ''"
+      >
         START
       </v-btn>
-      <v-btn variant="outlined" @click="onStop" prepend-icon="mdi-stop" class="ma-3" v-if="model==='start' || model==='pause' || model==='softStop'">
+      <v-btn
+        variant="outlined"
+        @click="onStop"
+        prepend-icon="mdi-stop"
+        class="ma-3"
+        v-if="model === 'start' || model === 'pause' || model === 'softStop'"
+      >
         STOP
       </v-btn>
-      <v-btn variant="outlined" @click="onPause" prepend-icon="mdi-pause" class="ma-3" v-if="model==='start' || model==='softStop'">
+      <v-btn
+        variant="outlined"
+        @click="onPause"
+        prepend-icon="mdi-pause"
+        class="ma-3"
+        v-if="model === 'start' || model === 'softStop'"
+      >
         PAUSE
       </v-btn>
-      <v-btn variant="outlined" @click="onResume" prepend-icon="mdi-play" class="ma-3" v-if="model==='pause'">
+      <v-btn
+        variant="outlined"
+        @click="onResume"
+        prepend-icon="mdi-play"
+        class="ma-3"
+        v-if="model === 'pause'"
+      >
         RESUME
       </v-btn>
     </div>
@@ -28,7 +52,7 @@ const model = defineModel()
 </template>
 
 <style scoped>
-.fix{
+.fix {
   position: fixed;
   bottom: 10px;
   left: 50%;
