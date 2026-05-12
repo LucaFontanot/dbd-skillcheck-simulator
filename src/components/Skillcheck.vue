@@ -48,7 +48,7 @@
       this.$nextTick(() => {
         initDom('skillcheck', this.$refs)
 
-        console.log(document.querySelector('.skillcheck-center').toDataURL())
+
       })
     }
   }

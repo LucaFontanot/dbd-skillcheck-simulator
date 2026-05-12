@@ -6,17 +6,17 @@
             v-show="gameState.startGameButton"
             @click="startGame">Play</button>
 
-            <button style="opacity: 0;" ref="stop" class="stopBtn" 
+            <button ref="stop" class="stopBtn" 
             :disabled="!gameState.stopGameButton || locked"
             v-show="gameState.stopGameButton"
             @click="stopGame">Stop</button>
 
-            <button style="opacity: 0;" ref="pause" class="pauseBtn" 
+            <button ref="pause" class="pauseBtn" 
             :disabled="!gameState.pauseGameButton || locked"
             v-show="gameState.pauseGameButton"
             @click="pauseGame">Pause</button>
 
-            <button style="opacity: 0;" ref="resume" class="resumeBtn" 
+            <button ref="resume" class="resumeBtn" 
             :disabled="!gameState.resumeGameButton || locked"
             v-show="gameState.resumeGameButton"
             @click="resumeGame">Resume</button>
