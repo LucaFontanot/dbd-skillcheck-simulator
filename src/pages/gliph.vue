@@ -4,6 +4,11 @@
   import Skillcheck from '../plugins/drawer/skillcheck'
   import GameState from '../plugins/store/gameState'
   import {
+    endSession,
+    recordResult,
+    startSession,
+  } from '../plugins/store/sessionManager'
+  import {
     addGlyph,
     addGlyphFail,
     addGlyphSuccess,
@@ -31,6 +36,7 @@
       d.animate = false
       d.setDisplay(false)
     }
+    if (status) endSession(false)
     state.value.playStatus = status ? 'stop' : 'softStop'
   }
 
@@ -38,6 +44,7 @@
     if (state.value.playStatus === 'start') {
       ticks.value += tickTime.value
       if (ticks.value >= maxTicks.value) {
+        endSession(true)
         stopGame(false)
         addGlyph(state.value.effects)
         setTimeout(() => {
@@ -61,6 +68,7 @@
     }
     state.value.playStatus = 'start'
     ticks.value = 0
+    startSession('glyph', {}, state.value.effects)
     setTimeout(() => {
       d = new Skillcheck(skillCheck.value)
       d.drawGliphSkillcheck({
@@ -74,12 +82,14 @@
       const onSuccess = (status, angle) => {
         d.playStatusSound(status)
         if (status === 'fail') {
+          recordResult('fail')
           addGlyphFail(state.value.effects)
           getAudio('skillcheck_fail').then(audio => {
             audio.volume = state.value.settings.surround / 100
             audio.play()
           })
           d.shake(300)
+          endSession(false)
           stopGame(false)
           addGlyph(state.value.effects)
           setTimeout(() => {
@@ -87,6 +97,7 @@
           }, 2000)
           return
         } else if (status === 'good') {
+          recordResult('good')
           addGlyphSuccess(state.value.effects)
           d.drawGliphSkillcheck(
             {

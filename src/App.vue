@@ -81,6 +81,7 @@
         <v-list-item
           prepend-icon="mdi-chart-line"
           title="Your stats"
+          to="/stats"
         />
 
         <v-list-item

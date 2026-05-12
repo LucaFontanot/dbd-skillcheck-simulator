@@ -3,7 +3,17 @@
   import Assets from '../plugins/drawer/assets'
   import Skillcheck from '../plugins/drawer/skillcheck'
   import GameState from '../plugins/store/gameState'
-  import { addGlyph } from '../plugins/store/statsManager'
+  import {
+    endSession,
+    recordResult,
+    startSession,
+  } from '../plugins/store/sessionManager'
+  import {
+    addWiggle,
+    addWiggleFail,
+    addWiggleGood,
+    addWiggleSuccess,
+  } from '../plugins/store/statsManager'
 
   const state = ref({})
   const skillCheck = ref(null)
@@ -27,6 +37,9 @@
       d.animate = false
       d.setDisplay(false)
     }
+    if (status) {
+      endSession(false)
+    }
     state.value.playStatus = status ? 'stop' : 'softStop'
   }
 
@@ -34,8 +47,9 @@
     if (state.value.playStatus === 'start') {
       ticks.value += tickTime.value
       if (ticks.value >= maxTicks.value) {
+        endSession(true)
         stopGame(false)
-        addGlyph(state.value.effects)
+        addWiggle(state.value.effects)
         setTimeout(() => {
           if (state.value.playStatus === 'softStop') startGame()
         }, 2000)
@@ -57,6 +71,7 @@
     }
     state.value.playStatus = 'start'
     ticks.value = 0
+    startSession('wiggle', {}, state.value.effects)
     let clockWise = true
     const goodSize = state.value.modifiers.wiggleGood
     const greatSize = state.value.modifiers.wiggleGreat
@@ -79,6 +94,8 @@
         let color = '#fff'
         switch (status) {
           case 'fail': {
+            recordResult('fail')
+            addWiggleFail(state.value.effects)
             d.shake(300)
             color = '#f00'
             combo = 0
@@ -90,12 +107,16 @@
             break
           }
           case 'good': {
+            recordResult('good')
+            addWiggleGood(state.value.effects)
             clockWise = !clockWise
             combo = 0
 
             break
           }
           case 'great': {
+            recordResult('great')
+            addWiggleSuccess(state.value.effects)
             color = '#ffe600'
             clockWise = !clockWise
             combo++

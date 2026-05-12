@@ -36,6 +36,11 @@
   import Assets from '../plugins/drawer/assets'
   import GameState from '../plugins/store/gameState'
   import {
+    endSession,
+    recordResult,
+    startSession,
+  } from '../plugins/store/sessionManager'
+  import {
     addGenerator,
     addGeneratorSkillCheckFail,
     addGeneratorSkillCheckGood,
@@ -76,6 +81,7 @@
     state.value.perks.hyperfocus.tokens = 0
     addGenerator(state.value.perks, state.value.effects)
     addGeneratorTime(maxTicks.value)
+    endSession(true)
     tick()
   }
 
@@ -171,6 +177,7 @@
             d.playStatusSound(status)
             switch (status) {
               case 'fail': {
+                recordResult('fail')
                 addGeneratorSkillCheckFail(state.value.perks, state.value.effects)
                 getAudio('generator_explode').then(audio => {
                   audio.volume = state.value.settings.surround / 100
@@ -193,6 +200,7 @@
                 break
               }
               case 'great': {
+                recordResult('great')
                 addGeneratorSkillCheckGreat(state.value.perks, state.value.effects)
                 let increase = 1000
                 if (
@@ -203,7 +211,7 @@
                     += maxTicks.value * (0.01 * state.value.perks.hyperfocus.tokens)
                   if (
                     state.value.perks.hyperfocus.tokens
-                    < state.value.modifiers.hyperfocus.hyperfocusStacksMax
+                    < state.value.modifiers.hyperfocusStacksMax
                   )
                     state.value.perks.hyperfocus.tokens++
                 }
@@ -220,6 +228,7 @@
                 break
               }
               case 'good': {
+                recordResult('good')
                 addGeneratorSkillCheckGood(state.value.perks, state.value.effects)
                 if (state.value.perks.ruin.active) {
                   ticks.value
@@ -253,10 +262,12 @@
     hasGlyphStarted = false
     nextSkillCheck.value = 1000
     d = new Skillcheck(skillCheck.value)
+    startSession('generator', state.value.perks, state.value.effects)
     tick()
   }
 
   function stopGame () {
+    endSession(false)
     state.value.playStatus = 'stop'
   }
 

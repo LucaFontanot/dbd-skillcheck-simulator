@@ -21,6 +21,9 @@ class GameState {
 
   loadGameState (gst) {
     const storage = localStorage.getItem('gameState')
+    if (!storage) {
+      return
+    }
     this.updateObjProps(gst, JSON.parse(storage))
   }
 
@@ -90,6 +93,23 @@ class GameState {
         gliphSuccessDayEffects: {},
         gliphFailEffects: {},
         gliphFailDayEffects: {},
+
+        wiggle: 0,
+        wiggleDay: {},
+        wiggleEffects: {},
+        wiggleDayEffects: {},
+        wiggleFail: 0,
+        wiggleFailDay: {},
+        wiggleFailEffects: {},
+        wiggleFailDayEffects: {},
+        wiggleSuccess: 0,
+        wiggleSuccessDay: {},
+        wiggleSuccessEffects: {},
+        wiggleSuccessDayEffects: {},
+        wiggleGood: 0,
+        wiggleGoodDay: {},
+        wiggleGoodEffects: {},
+        wiggleGoodDayEffects: {},
       },
       currentMode: 'generator',
       playStatus: 'stop',

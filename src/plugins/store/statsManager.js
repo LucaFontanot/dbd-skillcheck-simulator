@@ -80,7 +80,7 @@ export function addGenerator (perks = null, effects = null) {
   if (effects) {
     addEffects(
       state.stats.generatorsWithEffects,
-      state.stats.generatorsWithEffects,
+      state.stats.generatorsWithEffectsDay,
       1,
       effects,
     )
@@ -254,6 +254,73 @@ export function addGlyphFail (effects = null) {
     addEffects(
       state.stats.gliphFailEffects,
       state.stats.gliphFailDayEffects,
+      1,
+      effects,
+    )
+  }
+  GameState.saveState()
+}
+
+export function addWiggle (effects = null) {
+  state.stats.wiggle++
+  const day = getDayString()
+  if (!state.stats.wiggleDay[day]) {
+    state.stats.wiggleDay[day] = 0
+  }
+  state.stats.wiggleDay[day]++
+  if (effects) {
+    addEffects(state.stats.wiggleEffects, state.stats.wiggleDayEffects, 1, effects)
+  }
+  GameState.saveState()
+}
+
+export function addWiggleSuccess (effects = null) {
+  state.stats.wiggleSuccess++
+  const day = getDayString()
+  if (!state.stats.wiggleSuccessDay[day]) {
+    state.stats.wiggleSuccessDay[day] = 0
+  }
+  state.stats.wiggleSuccessDay[day]++
+  if (effects) {
+    addEffects(
+      state.stats.wiggleSuccessEffects,
+      state.stats.wiggleSuccessDayEffects,
+      1,
+      effects,
+    )
+  }
+  GameState.saveState()
+}
+
+export function addWiggleGood (effects = null) {
+  state.stats.wiggleGood++
+  const day = getDayString()
+  if (!state.stats.wiggleGoodDay[day]) {
+    state.stats.wiggleGoodDay[day] = 0
+  }
+  state.stats.wiggleGoodDay[day]++
+  if (effects) {
+    addEffects(
+      state.stats.wiggleGoodEffects,
+      state.stats.wiggleGoodDayEffects,
+      1,
+      effects,
+    )
+  }
+  GameState.saveState()
+}
+
+export function addWiggleFail (effects = null) {
+  state.stats.wiggleFail++
+  const day = getDayString()
+  if (!state.stats.wiggleFailDay[day]) {
+    state.stats.wiggleFailDay[day] = 0
+  }
+  state.stats.wiggleFailDay[day]++
+  if (effects) {
+    addEffects(
+      state.stats.wiggleFailEffects,
+      state.stats.wiggleFailDayEffects,
       1,
       effects,
     )
