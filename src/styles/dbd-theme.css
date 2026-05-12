@@ -1,0 +1,603 @@
+/* ============================================================
+   Dead By Daylight Theme
+   Dark horror / industrial aesthetic inspired by DBD visuals
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap');
+
+/* ── Design Tokens ──────────────────────────────────────────── */
+:root {
+  --dbd-bg:          #0c0b0a;
+  --dbd-bg-raised:   #161412;
+  --dbd-bg-surface:  #1e1b18;
+  --dbd-bg-card:     #221f1b;
+  --dbd-bg-overlay:  #2a2622;
+
+  --dbd-red:         #8b1600;
+  --dbd-red-mid:     #b82000;
+  --dbd-red-bright:  #d63010;
+  --dbd-blood:       #5c0e08;
+
+  --dbd-amber:       #c8960a;
+  --dbd-amber-light: #e8b000;
+  --dbd-orange:      #d46a00;
+
+  --dbd-entity:      #2e1240;
+  --dbd-entity-mid:  #5a2478;
+
+  --dbd-text:        #e2d9c8;
+  --dbd-text-dim:    #9a8e7e;
+  --dbd-text-muted:  #5e564c;
+
+  --dbd-border:      #3a332a;
+  --dbd-border-hot:  #6a3820;
+
+  --dbd-fog:         rgba(200, 180, 140, 0.04);
+  --dbd-glow-red:    rgba(180, 30, 0, 0.35);
+  --dbd-glow-amber:  rgba(200, 150, 10, 0.30);
+
+  --dbd-radius:      4px;
+  --dbd-radius-lg:   8px;
+
+  --font-display:    'Cinzel', 'Georgia', serif;
+  --font-body:       'Crimson Text', 'Georgia', serif;
+}
+
+/* ── Global Reset / Base ────────────────────────────────────── */
+html,
+body,
+#app {
+  background-color: var(--dbd-bg) !important;
+  color: var(--dbd-text) !important;
+  font-family: var(--font-body);
+  font-size: 16px;
+  min-height: 100vh;
+}
+
+/* Subtle background texture using a repeating noise pattern */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23noise)' opacity='0.035'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  opacity: 0.6;
+}
+
+/* ── v-app override ─────────────────────────────────────────── */
+.v-application {
+  background-color: var(--dbd-bg) !important;
+  color: var(--dbd-text) !important;
+  font-family: var(--font-body) !important;
+}
+
+/* ── Navigation Drawer ──────────────────────────────────────── */
+.v-navigation-drawer {
+  background-color: var(--dbd-bg-raised) !important;
+  border-right: 1px solid var(--dbd-border) !important;
+  box-shadow: 4px 0 24px rgba(0, 0, 0, 0.7) !important;
+}
+
+.v-navigation-drawer .v-list {
+  background: transparent !important;
+}
+
+.v-navigation-drawer .v-list-item {
+  color: var(--dbd-text-dim) !important;
+  border-radius: var(--dbd-radius) !important;
+  margin: 2px 6px !important;
+  transition: background 0.2s, color 0.2s, box-shadow 0.2s !important;
+  font-family: var(--font-body) !important;
+  font-size: 1.05rem !important;
+  letter-spacing: 0.03em !important;
+}
+
+.v-navigation-drawer .v-list-item:hover {
+  background-color: rgba(180, 60, 20, 0.15) !important;
+  color: var(--dbd-text) !important;
+}
+
+.v-navigation-drawer .v-list-item--active,
+.v-navigation-drawer .v-list-item.v-list-item--active {
+  background-color: rgba(139, 22, 0, 0.30) !important;
+  color: var(--dbd-amber-light) !important;
+  box-shadow: inset 2px 0 0 var(--dbd-red-bright) !important;
+}
+
+.v-navigation-drawer .v-list-item--active .v-list-item-title {
+  color: var(--dbd-amber-light) !important;
+}
+
+.v-navigation-drawer .v-divider {
+  border-color: var(--dbd-border) !important;
+  opacity: 1 !important;
+}
+
+/* ── App Bar ────────────────────────────────────────────────── */
+.v-app-bar {
+  background-color: var(--dbd-bg-raised) !important;
+  border-bottom: 1px solid var(--dbd-border) !important;
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.8) !important;
+}
+
+.v-toolbar-title {
+  font-family: var(--font-display) !important;
+  font-size: 1.15rem !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.12em !important;
+  text-transform: uppercase !important;
+  color: var(--dbd-amber) !important;
+  text-shadow: 0 0 12px var(--dbd-glow-amber) !important;
+}
+
+/* ── v-main ─────────────────────────────────────────────────── */
+.v-main {
+  background-color: var(--dbd-bg) !important;
+}
+
+/* ── Cards ──────────────────────────────────────────────────── */
+.v-card {
+  background-color: var(--dbd-bg-card) !important;
+  border: 1px solid var(--dbd-border) !important;
+  border-radius: var(--dbd-radius-lg) !important;
+  color: var(--dbd-text) !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 220, 120, 0.04) !important;
+}
+
+.v-card-title {
+  font-family: var(--font-display) !important;
+  font-size: 1.1rem !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.08em !important;
+  text-transform: uppercase !important;
+  color: var(--dbd-amber) !important;
+}
+
+.v-card-text {
+  color: var(--dbd-text-dim) !important;
+  font-family: var(--font-body) !important;
+  font-size: 1rem !important;
+}
+
+.v-card-actions {
+  border-top: 1px solid var(--dbd-border) !important;
+}
+
+/* ── Buttons ────────────────────────────────────────────────── */
+.v-btn {
+  font-family: var(--font-display) !important;
+  font-size: 0.75rem !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.12em !important;
+  text-transform: uppercase !important;
+  border-radius: var(--dbd-radius) !important;
+  transition: all 0.2s !important;
+}
+
+.v-btn--variant-outlined {
+  border-color: var(--dbd-border-hot) !important;
+  color: var(--dbd-text) !important;
+}
+
+.v-btn--variant-outlined:hover {
+  background-color: rgba(139, 22, 0, 0.25) !important;
+  border-color: var(--dbd-red-bright) !important;
+  color: var(--dbd-amber-light) !important;
+  box-shadow: 0 0 12px var(--dbd-glow-red) !important;
+}
+
+/* Start / Stop / Pause action buttons — make them pop */
+.v-btn[class*="ma-3"] {
+  background: linear-gradient(135deg, var(--dbd-bg-overlay), var(--dbd-bg-surface)) !important;
+  border: 1px solid var(--dbd-border-hot) !important;
+  color: var(--dbd-text) !important;
+}
+
+.v-btn[class*="ma-3"]:hover {
+  background: linear-gradient(135deg, rgba(139, 22, 0, 0.4), rgba(200, 100, 0, 0.2)) !important;
+  border-color: var(--dbd-red-bright) !important;
+  box-shadow: 0 0 16px var(--dbd-glow-red) !important;
+}
+
+/* icon-only buttons (perks / effects side buttons) */
+.v-btn--icon {
+  background-color: var(--dbd-bg-surface) !important;
+  border: 1px solid var(--dbd-border-hot) !important;
+  transition: box-shadow 0.2s, border-color 0.2s !important;
+}
+
+.v-btn--icon:hover {
+  border-color: var(--dbd-red-bright) !important;
+  box-shadow: 0 0 14px var(--dbd-glow-red) !important;
+}
+
+/* Error / danger buttons */
+.v-btn[color="error"],
+.v-btn.bg-error {
+  background-color: var(--dbd-blood) !important;
+  color: #ffaaaa !important;
+  border-color: var(--dbd-red-mid) !important;
+}
+
+.v-btn[color="error"]:hover {
+  background-color: var(--dbd-red) !important;
+  box-shadow: 0 0 16px var(--dbd-glow-red) !important;
+}
+
+/* ── Dialogs ────────────────────────────────────────────────── */
+.v-overlay__content .v-card {
+  background-color: var(--dbd-bg-overlay) !important;
+  border: 1px solid var(--dbd-border-hot) !important;
+  box-shadow: 0 8px 48px rgba(0, 0, 0, 0.9), 0 0 40px rgba(100, 10, 0, 0.25) !important;
+}
+
+.v-overlay__scrim {
+  background-color: rgba(0, 0, 0, 0.85) !important;
+}
+
+/* ── Tabs ───────────────────────────────────────────────────── */
+.v-tabs {
+  border-bottom: 1px solid var(--dbd-border) !important;
+}
+
+.v-tab {
+  font-family: var(--font-display) !important;
+  font-size: 0.7rem !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.1em !important;
+  text-transform: uppercase !important;
+  color: var(--dbd-text-muted) !important;
+  transition: color 0.2s !important;
+}
+
+.v-tab:hover {
+  color: var(--dbd-text-dim) !important;
+}
+
+.v-tab--selected {
+  color: var(--dbd-amber) !important;
+}
+
+.v-tabs .v-tabs-bar__content .v-tab--selected::after,
+.v-tabs__bar .v-slide-group__content .v-tab--selected {
+  color: var(--dbd-amber) !important;
+}
+
+/* Slider/indicator line under active tab */
+.v-tabs .v-tabs-slider-wrapper .v-tabs-slider,
+.v-tabs__slider {
+  background: var(--dbd-amber) !important;
+  height: 2px !important;
+}
+
+/* ── Form Controls ──────────────────────────────────────────── */
+.v-input .v-field {
+  background-color: var(--dbd-bg-raised) !important;
+  border-radius: var(--dbd-radius) !important;
+  color: var(--dbd-text) !important;
+}
+
+.v-field--variant-outlined .v-field__outline {
+  color: var(--dbd-border) !important;
+}
+
+.v-field--focused .v-field__outline {
+  color: var(--dbd-amber) !important;
+}
+
+.v-label {
+  color: var(--dbd-text-dim) !important;
+  font-family: var(--font-body) !important;
+}
+
+.v-input input,
+.v-input textarea,
+.v-select .v-select__selection-text {
+  color: var(--dbd-text) !important;
+  font-family: var(--font-body) !important;
+}
+
+/* Select dropdown */
+.v-overlay .v-list {
+  background-color: var(--dbd-bg-overlay) !important;
+  border: 1px solid var(--dbd-border) !important;
+}
+
+.v-overlay .v-list-item:hover {
+  background-color: rgba(139, 22, 0, 0.20) !important;
+}
+
+.v-overlay .v-list-item--active {
+  background-color: rgba(139, 22, 0, 0.35) !important;
+  color: var(--dbd-amber-light) !important;
+}
+
+/* Slider */
+.v-slider .v-slider-track__background {
+  background: var(--dbd-border) !important;
+}
+
+.v-slider .v-slider-track__fill {
+  background: var(--dbd-red-mid) !important;
+}
+
+.v-slider .v-slider-thumb__surface {
+  background: var(--dbd-amber) !important;
+  border: 2px solid var(--dbd-amber-light) !important;
+  box-shadow: 0 0 8px var(--dbd-glow-amber) !important;
+}
+
+/* Switch */
+.v-switch .v-switch__track {
+  background-color: var(--dbd-border) !important;
+}
+
+.v-switch .v-selection-control--dirty .v-switch__track {
+  background-color: var(--dbd-red) !important;
+}
+
+.v-switch .v-switch__thumb {
+  background-color: var(--dbd-text) !important;
+}
+
+/* Checkbox */
+.v-checkbox .v-selection-control__input .v-icon {
+  color: var(--dbd-text-dim) !important;
+}
+
+.v-checkbox .v-selection-control--dirty .v-icon {
+  color: var(--dbd-amber) !important;
+}
+
+/* Progress linear */
+.v-progress-linear {
+  border-radius: 2px !important;
+  overflow: hidden !important;
+}
+
+.v-progress-linear .v-progress-linear__background {
+  background: var(--dbd-border) !important;
+  opacity: 1 !important;
+}
+
+.v-progress-linear .v-progress-linear__determinate {
+  background: linear-gradient(90deg, var(--dbd-red-mid), var(--dbd-amber)) !important;
+  box-shadow: 0 0 8px var(--dbd-glow-red) !important;
+}
+
+/* Progress circular */
+.v-progress-circular .v-progress-circular__overlay {
+  stroke: var(--dbd-red-mid) !important;
+}
+
+/* Chip */
+.v-chip {
+  background-color: var(--dbd-bg-surface) !important;
+  border: 1px solid var(--dbd-border) !important;
+  color: var(--dbd-text-dim) !important;
+  font-family: var(--font-body) !important;
+  font-size: 0.85rem !important;
+}
+
+/* Tooltip */
+.v-tooltip .v-overlay__content {
+  background-color: var(--dbd-bg-overlay) !important;
+  border: 1px solid var(--dbd-border-hot) !important;
+  color: var(--dbd-text) !important;
+  font-family: var(--font-body) !important;
+  font-size: 0.9rem !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.8) !important;
+  max-width: 320px !important;
+}
+
+/* Badge */
+.v-badge__badge {
+  font-family: var(--font-display) !important;
+  font-size: 0.55rem !important;
+  font-weight: 700 !important;
+}
+
+/* ── Alert banner ───────────────────────────────────────────── */
+.v-alert {
+  font-family: var(--font-body) !important;
+  font-size: 0.95rem !important;
+}
+
+.v-alert.v-alert--type-info {
+  background-color: rgba(30, 15, 45, 0.92) !important;
+  border: 1px solid var(--dbd-entity-mid) !important;
+  color: #c8b8e0 !important;
+}
+
+.v-alert a {
+  color: var(--dbd-amber-light) !important;
+  text-decoration: underline !important;
+}
+
+/* ── Divider ────────────────────────────────────────────────── */
+.v-divider {
+  border-color: var(--dbd-border) !important;
+  opacity: 1 !important;
+}
+
+/* ── Headings ───────────────────────────────────────────────── */
+h1, h2, h3,
+.text-h4, .text-h5, .text-h6,
+.text-subtitle-1 {
+  font-family: var(--font-display) !important;
+  letter-spacing: 0.06em !important;
+  color: var(--dbd-text) !important;
+}
+
+h1, .text-h5 {
+  text-transform: uppercase !important;
+}
+
+/* ── Scrollbar ──────────────────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--dbd-bg-raised);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--dbd-border-hot);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--dbd-red-mid);
+}
+
+/* ── Stats page cards ───────────────────────────────────────── */
+.stat-card {
+  background: linear-gradient(135deg, var(--dbd-bg-card), var(--dbd-bg-surface)) !important;
+  border: 1px solid var(--dbd-border-hot) !important;
+}
+
+.chart-card {
+  background: linear-gradient(180deg, var(--dbd-bg-card), var(--dbd-bg-raised)) !important;
+  border: 1px solid var(--dbd-border) !important;
+}
+
+/* ── Utility: DBD section heading style ─────────────────────── */
+.dbd-heading {
+  font-family: var(--font-display);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--dbd-amber);
+  text-shadow: 0 0 10px var(--dbd-glow-amber);
+}
+
+/* ── Selection highlight ────────────────────────────────────── */
+::selection {
+  background-color: rgba(139, 22, 0, 0.5);
+  color: var(--dbd-text);
+}
+
+/* ── Page title (large, centered) ───────────────────────────── */
+.dbd-page-title {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.3em;
+  color: var(--dbd-text);
+  text-align: center;
+  position: relative;
+  padding-bottom: 12px;
+}
+
+.dbd-page-title::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--dbd-red-bright), transparent);
+  box-shadow: 0 0 8px var(--dbd-glow-red);
+}
+
+/* ── Section title with decorative side lines ────────────────── */
+.dbd-section-title {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-family: var(--font-display);
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  color: var(--dbd-amber);
+  text-shadow: 0 0 10px var(--dbd-glow-amber);
+  white-space: nowrap;
+}
+
+.dbd-section-title::before,
+.dbd-section-title::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--dbd-border-hot) 60%, transparent);
+}
+
+/* ── Warning alert — horror red ──────────────────────────────── */
+.v-alert.v-alert--type-warning {
+  background-color: rgba(45, 12, 0, 0.92) !important;
+  border: 1px solid var(--dbd-red) !important;
+  color: #cc9966 !important;
+}
+
+.v-alert.v-alert--type-warning .v-alert__prepend .v-icon {
+  color: var(--dbd-red-bright) !important;
+}
+
+/* ── Number input ────────────────────────────────────────────── */
+.v-number-input .v-btn {
+  background-color: var(--dbd-bg-overlay) !important;
+  color: var(--dbd-amber) !important;
+}
+
+.v-number-input .v-field__input {
+  color: var(--dbd-text) !important;
+  font-family: var(--font-display) !important;
+  font-size: 0.9rem !important;
+  letter-spacing: 0.05em !important;
+}
+
+/* ── Slider thumb label (value on drag) ──────────────────────── */
+.v-slider .v-slider-thumb__label {
+  background-color: var(--dbd-bg-overlay) !important;
+  border: 1px solid var(--dbd-border-hot) !important;
+  color: var(--dbd-amber-light) !important;
+  font-family: var(--font-body) !important;
+  font-size: 0.8rem !important;
+}
+
+/* ── Inline slider value text ────────────────────────────────── */
+.dbd-slider-value {
+  color: var(--dbd-amber-light);
+  font-family: var(--font-body);
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  min-width: 72px;
+  text-align: right;
+}
+
+/* ── Card content padding ────────────────────────────────────── */
+.v-card > .v-card-text {
+  padding: 28px 36px 36px !important;
+}
+
+/* ── v-label visibility ──────────────────────────────────────── */
+.v-label {
+  color: var(--dbd-text-dim) !important;
+  font-size: 0.9rem !important;
+  letter-spacing: 0.03em !important;
+}
+
+/* ── v-row within cards: breathing room between slider groups ── */
+.v-card .v-row + h3,
+.v-card .v-row + .dbd-section-title {
+  margin-top: 2rem !important;
+}
+
+/* ── Warning alert backup selector ──────────────────────────── */
+.v-alert.bg-warning {
+  background-color: rgba(40, 10, 0, 0.95) !important;
+  border: 1px solid rgba(139, 22, 0, 0.5) !important;
+  color: #cc9966 !important;
+}
+
+.v-alert.bg-warning .v-icon {
+  color: var(--dbd-red-bright) !important;
+}

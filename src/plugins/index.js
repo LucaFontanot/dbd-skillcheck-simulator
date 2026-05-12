@@ -11,6 +11,7 @@ import router from '../router'
 // Plugins
 import vuetify from './vuetify'
 import 'vue-toast-notification/dist/theme-default.css'
+import '../styles/dbd-theme.css'
 
 export function registerPlugins (app) {
   console.log('Registering plugins')

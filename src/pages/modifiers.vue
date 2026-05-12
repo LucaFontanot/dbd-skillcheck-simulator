@@ -27,19 +27,19 @@
 
 <template>
   <div class="ma-5">
-    <h2 class="text-center mb-5">Modifiers</h2>
+    <h2 class="dbd-page-title mb-7">Modifiers</h2>
 
     <div class="d-flex justify-center">
       <v-card style="width: 80vw; min-width: 300px">
         <v-card-text>
           <v-alert
-            class="mb-5"
+            class="mb-8"
             type="warning"
           >Those options can significantly change the game experience, and
             make the game unplayable, use them wisely
           </v-alert>
 
-          <h3 class="text-center mb-5">Skill Check Modifiers</h3>
+          <h3 class="dbd-section-title mb-6">Skill Check Modifiers</h3>
 
           <v-row>
             <v-col cols="12" md="4">
@@ -47,7 +47,7 @@
 
               <v-slider
                 v-model="modifiers.frequency"
-                color="light-green-lighten-2"
+                color="secondary"
                 label=""
                 max="20000"
                 min="2500"
@@ -55,7 +55,7 @@
                 @update:model-value="save"
               >
                 <template #append>
-                  <span>{{ parseInt(modifiers.frequency) }}ms</span>
+                  <span class="dbd-slider-value">{{ parseInt(modifiers.frequency) }}ms</span>
 
                   <v-tooltip>
                     <template #activator="{ props }">
@@ -80,7 +80,7 @@
 
               <v-slider
                 v-model="modifiers.advertisetime"
-                color="light-green-lighten-2"
+                color="secondary"
                 label=""
                 max="5000"
                 min="0"
@@ -88,7 +88,7 @@
                 @update:model-value="save"
               >
                 <template #append>
-                  <span>{{ parseInt(modifiers.advertisetime) }}ms</span>
+                  <span class="dbd-slider-value">{{ parseInt(modifiers.advertisetime) }}ms</span>
 
                   <v-tooltip>
                     <template #activator="{ props }">
@@ -113,14 +113,14 @@
 
               <v-slider
                 v-model="modifiers.speed"
-                color="light-green-lighten-2"
+                color="secondary"
                 max="10"
                 min="0.1"
                 thumb-label
                 @update:model-value="save"
               >
                 <template #append>
-                  <span>{{ parseInt(modifiers.speed) }}x</span>
+                  <span class="dbd-slider-value">{{ parseInt(modifiers.speed) }}x</span>
 
                   <v-tooltip>
                     <template #activator="{ props }">
@@ -145,14 +145,14 @@
 
               <v-slider
                 v-model="modifiers.dstime"
-                color="light-green-lighten-2"
+                color="secondary"
                 max="10000"
                 min="2200"
                 thumb-label
                 @update:model-value="save"
               >
                 <template #append>
-                  <span>{{ parseInt(modifiers.dstime) }}ms</span>
+                  <span class="dbd-slider-value">{{ parseInt(modifiers.dstime) }}ms</span>
 
                   <v-tooltip>
                     <template #activator="{ props }">
@@ -173,13 +173,13 @@
             </v-col>
           </v-row>
 
-          <h3 class="text-center mb-5">Perks Modifiers</h3>
+          <h3 class="dbd-section-title mt-10 mb-6">Perks Modifiers</h3>
 
           <v-row>
             <v-col cols="12" md="2">
               <v-number-input
                 v-model="modifiers.hyperfocusStacksMax"
-                color="light-green-lighten-2"
+                color="secondary"
                 label="Max Hyperfocus stacks"
                 min="1"
                 variant="underlined"
@@ -188,7 +188,7 @@
             </v-col>
           </v-row>
 
-          <h3 class="text-center mb-5">Generator modifiers</h3>
+          <h3 class="dbd-section-title mt-10 mb-6">Generator Modifiers</h3>
 
           <v-row>
             <v-col cols="12" md="6">
@@ -196,14 +196,14 @@
 
               <v-slider
                 v-model="modifiers.gentime"
-                color="light-green-lighten-2"
+                color="secondary"
                 max="200000"
                 min="10000"
                 thumb-label
                 @update:model-value="save"
               >
                 <template #append>
-                  <span>{{ parseInt(modifiers.gentime) }}ms</span>
+                  <span class="dbd-slider-value">{{ parseInt(modifiers.gentime) }}ms</span>
 
                   <v-tooltip>
                     <template #activator="{ props }">
@@ -226,7 +226,7 @@
             <v-col cols="12" md="6">
               <v-select
                 v-model="modifiers.advertise"
-                color="light-green-lighten-2"
+                color="secondary"
                 :items="[
                   'advertise_01',
                   'advertise_02',
@@ -258,7 +258,7 @@
             </v-col>
           </v-row>
 
-          <h3 class="text-center mb-5">Glyph modifiers</h3>
+          <h3 class="dbd-section-title mt-10 mb-6">Glyph Modifiers</h3>
 
           <v-row>
             <v-col cols="12" md="6">
@@ -266,14 +266,14 @@
 
               <v-slider
                 v-model="modifiers.glyphduration"
-                color="light-green-lighten-2"
+                color="secondary"
                 max="15000"
                 min="1000"
                 thumb-label
                 @update:model-value="save"
               >
                 <template #append>
-                  <span>{{ parseInt(modifiers.glyphduration) }}ms</span>
+                  <span class="dbd-slider-value">{{ parseInt(modifiers.glyphduration) }}ms</span>
 
                   <v-tooltip>
                     <template #activator="{ props }">
@@ -298,14 +298,14 @@
 
               <v-slider
                 v-model="modifiers.glyphbasesize"
-                color="light-green-lighten-2"
+                color="secondary"
                 max="100"
                 min="20"
                 thumb-label
                 @update:model-value="save"
               >
                 <template #append>
-                  <span>{{ parseInt(modifiers.glyphbasesize) }}</span>
+                  <span class="dbd-slider-value">{{ parseInt(modifiers.glyphbasesize) }}</span>
 
                   <v-tooltip>
                     <template #activator="{ props }">
@@ -326,7 +326,7 @@
             </v-col>
           </v-row>
 
-          <h3 class="text-center mb-5">Wiggle modifiers</h3>
+          <h3 class="dbd-section-title mt-10 mb-6">Wiggle Modifiers</h3>
 
           <v-row>
             <v-col cols="12" md="6">
@@ -334,14 +334,14 @@
 
               <v-slider
                 v-model="modifiers.wiggleDuration"
-                color="light-green-lighten-2"
+                color="secondary"
                 max="30000"
                 min="1000"
                 thumb-label
                 @update:model-value="save"
               >
                 <template #append>
-                  <span>{{ parseInt(modifiers.wiggleDuration) }}ms</span>
+                  <span class="dbd-slider-value">{{ parseInt(modifiers.wiggleDuration) }}ms</span>
 
                   <v-tooltip>
                     <template #activator="{ props }">
@@ -366,14 +366,14 @@
 
               <v-slider
                 v-model="modifiers.wiggleGreat"
-                color="light-green-lighten-2"
+                color="secondary"
                 max="45"
                 min="0"
                 thumb-label
                 @update:model-value="save"
               >
                 <template #append>
-                  <span>{{ parseInt(modifiers.wiggleGreat) }}</span>
+                  <span class="dbd-slider-value">{{ parseInt(modifiers.wiggleGreat) }}</span>
 
                   <v-tooltip>
                     <template #activator="{ props }">
@@ -398,14 +398,14 @@
 
               <v-slider
                 v-model="modifiers.wiggleGood"
-                color="light-green-lighten-2"
+                color="secondary"
                 max="45"
                 min="0"
                 thumb-label
                 @update:model-value="save"
               >
                 <template #append>
-                  <span>{{ parseInt(modifiers.wiggleGood) }}</span>
+                  <span class="dbd-slider-value">{{ parseInt(modifiers.wiggleGood) }}</span>
 
                   <v-tooltip>
                     <template #activator="{ props }">
