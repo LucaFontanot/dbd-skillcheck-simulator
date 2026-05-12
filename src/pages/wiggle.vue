@@ -1,145 +1,154 @@
 <script setup>
-import { onMounted, ref } from "vue";
-import GameState from "../plugins/store/gameState";
-import Skillcheck from "../plugins/drawer/skillcheck";
-import Assets from "../plugins/drawer/assets";
-import { addGlyph } from "../plugins/store/statsManager";
+  import { onMounted, ref } from 'vue'
+  import Assets from '../plugins/drawer/assets'
+  import Skillcheck from '../plugins/drawer/skillcheck'
+  import GameState from '../plugins/store/gameState'
+  import { addGlyph } from '../plugins/store/statsManager'
 
-let state = ref({});
-let skillCheck = ref(null);
-const maxTicks = ref(1000);
-const tickTime = ref(500);
-const ticks = ref(0);
-let d = null;
+  const state = ref({})
+  const skillCheck = ref(null)
+  const maxTicks = ref(1000)
+  const tickTime = ref(500)
+  const ticks = ref(0)
+  let d = null
 
-async function getAudio(name) {
-  // eslint-disable-next-line no-async-promise-executor
-  return new Promise(async (resolve, reject) => {
-    const audio = new Audio();
-    audio.oncanplay = function () {
-      resolve(audio);
-    };
-    audio.src = await Assets.getAsset(name);
-  });
-}
-
-function stopGame(status = true) {
-  if (d) {
-    d.animate = false;
-    d.setDisplay(false);
+  async function getAudio (name) {
+    return new Promise(async (resolve, reject) => {
+      const audio = new Audio()
+      audio.addEventListener('canplay', function () {
+        resolve(audio)
+      })
+      audio.src = await Assets.getAsset(name)
+    })
   }
-  if (status) state.value.playStatus = "stop";
-  else state.value.playStatus = "softStop";
-}
 
-function tick() {
-  if (state.value.playStatus === "start") {
-    ticks.value += tickTime.value;
-    if (ticks.value >= maxTicks.value) {
-      stopGame(false);
-      addGlyph(state.value.effects);
-      setTimeout(() => {
-        if (state.value.playStatus === "softStop") startGame();
-      }, 2000);
-      return;
+  function stopGame (status = true) {
+    if (d) {
+      d.animate = false
+      d.setDisplay(false)
     }
+    state.value.playStatus = status ? 'stop' : 'softStop'
   }
-  if (
-    state.value.playStatus === "stop" ||
-    state.value.playStatus === "softStop"
-  ) {
-    return;
-  }
-  setTimeout(tick, tickTime.value);
-}
 
-function startGame() {
-  if (state.value.playStatus === "start") {
-    return;
-  }
-  state.value.playStatus = "start";
-  ticks.value = 0;
-  let clockWise = true;
-  let goodSize = state.value.modifiers.wiggleGood;
-  let greatSize = state.value.modifiers.wiggleGreat;
-  let combo = 0;
-  setTimeout(() => {
-    d = new Skillcheck(skillCheck.value);
-    d.drawWiggleSkillcheck({
-      effects: null,
-      perks: {},
-      autoApplyModifiers: true,
-      autoApplyPerks: false,
-      greatSize: greatSize,
-      goodSize: goodSize,
-      clockwise: clockWise,
-      color: "#fff",
-    });
-    let startTime = Date.now() - state.value.modifiers.advertisetime;
-    let onSuccess = (status, angle) => {
-      d.playStatusSound(status);
-      let color = "#fff";
-      if (status === "fail") {
-        d.shake(300);
-        color = "#f00";
-        combo = 0;
-        getAudio("skillcheck_fail").then((audio) => {
-          audio.volume = state.value.settings.surround / 100;
-          audio.play();
-        });
-      } else if (status === "good") {
-        clockWise = !clockWise;
-        combo = 0;
-      } else if (status === "great") {
-        color = "#ffe600";
-        clockWise = !clockWise;
-        combo++;
+  function tick () {
+    if (state.value.playStatus === 'start') {
+      ticks.value += tickTime.value
+      if (ticks.value >= maxTicks.value) {
+        stopGame(false)
+        addGlyph(state.value.effects)
+        setTimeout(() => {
+          if (state.value.playStatus === 'softStop') startGame()
+        }, 2000)
+        return
       }
-      let thisgreatSize = Math.min(
-        greatSize,
-        Math.max(4, greatSize - combo * 0.5),
-      );
-      let thisgoodSize = Math.min(goodSize + 4, goodSize + combo * 0.5);
+    }
+    if (
+      state.value.playStatus === 'stop'
+      || state.value.playStatus === 'softStop'
+    ) {
+      return
+    }
+    setTimeout(tick, tickTime.value)
+  }
+
+  function startGame () {
+    if (state.value.playStatus === 'start') {
+      return
+    }
+    state.value.playStatus = 'start'
+    ticks.value = 0
+    let clockWise = true
+    const goodSize = state.value.modifiers.wiggleGood
+    const greatSize = state.value.modifiers.wiggleGreat
+    let combo = 0
+    setTimeout(() => {
+      d = new Skillcheck(skillCheck.value)
       d.drawWiggleSkillcheck({
         effects: null,
         perks: {},
         autoApplyModifiers: true,
         autoApplyPerks: false,
-        greatSize: thisgreatSize,
-        goodSize: thisgoodSize,
+        greatSize: greatSize,
+        goodSize: goodSize,
         clockwise: clockWise,
-        color: color,
-      });
+        color: '#fff',
+      })
+      const startTime = Date.now() - state.value.modifiers.advertisetime
+      const onSuccess = (status, angle) => {
+        d.playStatusSound(status)
+        let color = '#fff'
+        switch (status) {
+          case 'fail': {
+            d.shake(300)
+            color = '#f00'
+            combo = 0
+            getAudio('skillcheck_fail').then(audio => {
+              audio.volume = state.value.settings.surround / 100
+              audio.play()
+            })
+
+            break
+          }
+          case 'good': {
+            clockWise = !clockWise
+            combo = 0
+
+            break
+          }
+          case 'great': {
+            color = '#ffe600'
+            clockWise = !clockWise
+            combo++
+
+            break
+          }
+        // No default
+        }
+        const thisgreatSize = Math.min(
+          greatSize,
+          Math.max(4, greatSize - combo * 0.5),
+        )
+        const thisgoodSize = Math.min(goodSize + 4, goodSize + combo * 0.5)
+        d.drawWiggleSkillcheck({
+          effects: null,
+          perks: {},
+          autoApplyModifiers: true,
+          autoApplyPerks: false,
+          greatSize: thisgreatSize,
+          goodSize: thisgoodSize,
+          clockwise: clockWise,
+          color: color,
+        })
+        d.animateWiggle({
+          onSuccess: onSuccess,
+          startTime: Date.now(),
+          startPos: angle + 90,
+        })
+      }
       d.animateWiggle({
         onSuccess: onSuccess,
-        startTime: Date.now(),
-        startPos: angle + 90,
-      });
-    };
-    d.animateWiggle({
-      onSuccess: onSuccess,
-      startTime: startTime,
-      startPos: 0,
-    });
-    setTimeout(() => {
-      tick();
-    }, state.value.modifiers.advertisetime);
-  }, 300);
-}
+        startTime: startTime,
+        startPos: 0,
+      })
+      setTimeout(() => {
+        tick()
+      }, state.value.modifiers.advertisetime)
+    }, 300)
+  }
 
-function pauseGame() {
-  state.value.playStatus = "stop";
-}
+  function pauseGame () {
+    state.value.playStatus = 'stop'
+  }
 
-function resumeGame() {
-  state.value.playStatus = "start";
-}
+  function resumeGame () {
+    state.value.playStatus = 'start'
+  }
 
-onMounted(() => {
-  state.value = GameState.getState();
-  state.value.playStatus = "stop";
-  maxTicks.value = state.value.modifiers.wiggleDuration;
-});
+  onMounted(() => {
+    state.value = GameState.getState()
+    state.value.playStatus = 'stop'
+    maxTicks.value = state.value.modifiers.wiggleDuration
+  })
 </script>
 
 <template>
@@ -149,23 +158,26 @@ onMounted(() => {
       class="skillcheck hidden"
       height="200"
       width="200"
-    ></canvas>
-    <modifiers></modifiers>
-    <perkshud :show-effects="true" :show-perks="false"></perkshud>
+    />
+
+    <modifiers />
+    <perkshud :show-effects="true" :show-perks="false" />
+
     <startstop
       v-model="state.playStatus"
-      :on-start="startGame"
-      :on-stop="stopGame"
       :on-pause="pauseGame"
       :on-resume="resumeGame"
-    ></startstop>
-    <div class="progress" v-if="state.playStatus === 'start'">
+      :on-start="startGame"
+      :on-stop="stopGame"
+    />
+
+    <div v-if="state.playStatus === 'start'" class="progress">
       <v-progress-linear
         color="grey-lighten-4"
-        :model-value="ticks"
-        :max="maxTicks"
         :height="12"
-      ></v-progress-linear>
+        :max="maxTicks"
+        :model-value="ticks"
+      />
     </div>
   </div>
 </template>

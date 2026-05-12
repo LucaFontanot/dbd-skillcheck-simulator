@@ -1,16 +1,15 @@
+import { fileURLToPath, URL } from 'node:url'
+import Vue from '@vitejs/plugin-vue'
 // Plugins
-import AutoImport from "unplugin-auto-import/vite";
-import Components from "unplugin-vue-components/vite";
-import Fonts from "unplugin-fonts/vite";
-import Layouts from "vite-plugin-vue-layouts";
-import Vue from "@vitejs/plugin-vue";
-import VueRouter from "unplugin-vue-router/vite";
-import Vuetify, { transformAssetUrls } from "vite-plugin-vuetify";
-
+import AutoImport from 'unplugin-auto-import/vite'
+import Fonts from 'unplugin-fonts/vite'
+import Components from 'unplugin-vue-components/vite'
+import VueRouter from 'unplugin-vue-router/vite'
 // Utilities
-import { defineConfig } from "vite";
-import { fileURLToPath, URL } from "node:url";
-import eslintPlugin from "vite-plugin-eslint";
+import { defineConfig } from 'vite'
+import eslintPlugin from 'vite-plugin-eslint'
+import Layouts from 'vite-plugin-vue-layouts-next'
+import Vuetify, { transformAssetUrls } from 'vite-plugin-vuetify'
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -24,7 +23,7 @@ export default defineConfig({
     Vuetify({
       autoImport: true,
       styles: {
-        configFile: "src/styles/settings.scss",
+        configFile: 'src/styles/settings.scss',
       },
     }),
     Components(),
@@ -32,14 +31,14 @@ export default defineConfig({
       google: {
         families: [
           {
-            name: "Roboto",
-            styles: "wght@100;300;400;500;700;900",
+            name: 'Roboto',
+            styles: 'wght@100;300;400;500;700;900',
           },
         ],
       },
     }),
     AutoImport({
-      imports: ["vue", "vue-router"],
+      imports: ['vue', 'vue-router'],
       eslintrc: {
         enabled: true,
       },
@@ -47,15 +46,15 @@ export default defineConfig({
     }),
     eslintPlugin(),
   ],
-  define: { "process.env": {} },
+  define: { 'process.env': {} },
   resolve: {
     alias: {
-      "@": fileURLToPath(new URL("./src", import.meta.url)),
+      '@': fileURLToPath(new URL('src', import.meta.url)),
     },
-    extensions: [".js", ".json", ".jsx", ".mjs", ".ts", ".tsx", ".vue"],
+    extensions: ['.js', '.json', '.jsx', '.mjs', '.ts', '.tsx', '.vue'],
   },
   server: {
     port: 3000,
   },
-  base: "./",
-});
+  base: './',
+})

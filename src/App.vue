@@ -1,97 +1,107 @@
 <template>
   <v-app>
-    <v-alert type="info" class="infobanner"
-      >V2 is still under development, some features may not work as expected
+    <v-alert
+      class="infobanner"
+      type="info"
+    >V2 is still under development, some features may not work as expected
       and/or be missing. Please share any feedbacks
-      <a href="https://github.com/LucaFontanot/dbd-skillcheck-simulator/issues"
-        >on github</a
-      >
-      by opening an issue</v-alert
-    >
+      <a href="https://github.com/LucaFontanot/dbd-skillcheck-simulator/issues">on github</a>
+      by opening an issue</v-alert>
 
     <v-app-bar class="mobile" prominent style="z-index: 106">
       <v-app-bar-nav-icon
         variant="text"
         @click.stop="drawer = !drawer"
-      ></v-app-bar-nav-icon>
+      />
 
       <v-toolbar-title>Skill Check Trainer</v-toolbar-title>
     </v-app-bar>
+
     <v-navigation-drawer v-model="drawer" style="top: 0; height: 100%">
       <v-list density="compact" nav>
         <v-list-item
           prepend-icon="mdi-account-circle-outline"
           title="Account"
-        ></v-list-item>
+        />
       </v-list>
-      <v-divider></v-divider>
+
+      <v-divider />
+
       <v-list>
-        <v-list-item to="/" title="Custom mode">
-          <template v-slot:prepend>
+        <v-list-item title="Custom mode" to="/">
+          <template #prepend>
             <img
               src="@/assets/icons/generator.png"
-              width="24px"
               style="margin-right: 32px"
-            />
+              width="24px"
+            >
           </template>
         </v-list-item>
+
         <v-list-item title="Decisive Strike" to="/ds">
-          <template v-slot:prepend>
+          <template #prepend>
             <img
               src="@/assets/icons/decisiveStrike.png"
-              width="24px"
               style="margin-right: 32px"
-            />
+              width="24px"
+            >
           </template>
         </v-list-item>
+
         <v-list-item title="Glyph" to="/gliph">
-          <template v-slot:prepend>
+          <template #prepend>
             <img
               src="@/assets/icons/glyph.png"
-              width="24px"
               style="margin-right: 32px"
-            />
+              width="24px"
+            >
           </template>
         </v-list-item>
+
         <v-list-item title="Wiggle" to="/wiggle">
-          <template v-slot:prepend>
+          <template #prepend>
             <img
               src="@/assets/icons/wiggle.png"
-              width="24px"
               style="margin-right: 32px"
-            />
+              width="24px"
+            >
           </template>
         </v-list-item>
       </v-list>
 
-      <v-divider></v-divider>
+      <v-divider />
 
       <v-list density="compact" nav>
         <v-list-item
           prepend-icon="mdi-tune"
           title="Modifiers"
           to="/modifiers"
-        ></v-list-item>
+        />
+
         <v-list-item
           prepend-icon="mdi-chart-line"
           title="Your stats"
-        ></v-list-item>
+        />
+
         <v-list-item
           prepend-icon="mdi-cog"
           title="Settings"
           to="/settings"
-        ></v-list-item>
+        />
+
         <v-list-item
           prepend-icon="mdi-information-outline"
           title="Privacy & Terms And Condition"
-        ></v-list-item>
+        />
+
         <v-list-item
           prepend-icon="mdi-skip-backward-outline"
           title="Old version"
-          v-on:click="old"
-        ></v-list-item>
+          @click="old"
+        />
       </v-list>
     </v-navigation-drawer>
+
     <v-main>
       <router-view />
     </v-main>
@@ -99,87 +109,91 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, ref, watch } from "vue";
-import { controllerInit } from "./plugins/controller";
-import GameState from "./plugins/store/gameState";
+  import { onMounted, ref, watch } from 'vue'
+  import { controllerInit } from './plugins/controller'
+  import GameState from './plugins/store/gameState'
 
-const drawer = ref(true);
+  const drawer = ref(true)
 
-function old() {
-  window.location.href = "https://dbd.lucaservers.com";
-}
-
-function load() {
-  if (GameState.pinia === null) {
-    return setTimeout(load, 100);
+  function old () {
+    window.location.href = 'https://dbd.lucaservers.com'
   }
-  const state = GameState.getState();
-  document.oncontextmenu = document.body.oncontextmenu = function () {
-    if (state.settings.mouse) {
-      document.dispatchEvent(new Event("skillchedkClick"));
-    }
-    return false;
-  };
-  window.addEventListener("wheel", (e) => {
-    if (state.settings.wheel) {
-      document.dispatchEvent(new Event("skillchedkClick"));
-    }
-  });
-  let isDown = false;
-  window.addEventListener("mousedown", (e) => {
-    if (state.settings.mouse && !isDown) {
-      document.dispatchEvent(new Event("skillchedkClick"));
-      isDown = true;
-    }
-  });
-  window.addEventListener("mouseup", (e) => {
-    isDown = false;
-  });
-  let isTouchDown = false;
-  window.addEventListener("touchstart", (e) => {
-    if (state.settings.click && !isTouchDown) {
-      document.dispatchEvent(new Event("skillchedkClick"));
-      isTouchDown = true;
-    }
-  });
-  window.addEventListener("touchend", (e) => {
-    isTouchDown = false;
-  });
-  let isKeyDown = false;
-  window.addEventListener("keydown", (e) => {
-    if (
-      state.settings.keyboard.startKey === e.code &&
-      (state.playStatus === "stop" || state.playStatus === "pause")
-    ) {
-      state.playStatus = "start";
-    } else if (
-      state.settings.keyboard.stopKey === e.code &&
-      (state.playStatus === "start" || state.playStatus === "pause")
-    ) {
-      state.playStatus = "stop";
-    }
-    if (state.settings.keyboard.keys.includes(e.code) && !isKeyDown) {
-      document.dispatchEvent(new Event("skillchedkClick"));
-      isKeyDown = true;
-    }
-  });
-  window.addEventListener("keyup", (e) => {
-    isKeyDown = false;
-  });
-  if (state.settings.specialMouse) {
-    history.pushState(null, null, location.href);
-    window.onpopstate = function () {
-      history.go(1);
-    };
-  } else {
-    window.onpopstate = function () {};
-  }
-  controllerInit();
-}
 
-onMounted(() => {
-  load();
-});
+  function load () {
+    if (GameState.pinia === null) {
+      return setTimeout(load, 100)
+    }
+    const state = GameState.getState()
+    document.addEventListener('contextmenu', e => {
+      if (state.settings.mouse) {
+        e.preventDefault()
+        document.dispatchEvent(new Event('skillchedkClick'))
+      }
+      return false
+    })
+    window.addEventListener('wheel', e => {
+      if (state.settings.wheel) {
+        e.preventDefault()
+        document.dispatchEvent(new Event('skillchedkClick'))
+      }
+    })
+    let isDown = false
+    window.addEventListener('mousedown', e => {
+      if (state.settings.mouse && !isDown) {
+        e.preventDefault()
+        document.dispatchEvent(new Event('skillchedkClick'))
+        isDown = true
+      }
+    })
+    window.addEventListener('mouseup', e => {
+      isDown = false
+    })
+    let isTouchDown = false
+    window.addEventListener('touchstart', e => {
+      if (state.settings.click && !isTouchDown) {
+        e.preventDefault()
+        document.dispatchEvent(new Event('skillchedkClick'))
+        isTouchDown = true
+      }
+    })
+    window.addEventListener('touchend', e => {
+      isTouchDown = false
+    })
+    let isKeyDown = false
+    window.addEventListener('keydown', e => {
+      if (
+        state.settings.keyboard.startKey === e.code
+        && (state.playStatus === 'stop' || state.playStatus === 'pause')
+      ) {
+        state.playStatus = 'start'
+      } else if (
+        state.settings.keyboard.stopKey === e.code
+        && (state.playStatus === 'start' || state.playStatus === 'pause')
+      ) {
+        state.playStatus = 'stop'
+      }
+      if (state.settings.keyboard.keys.includes(e.code) && !isKeyDown) {
+        document.dispatchEvent(new Event('skillchedkClick'))
+        isKeyDown = true
+      }
+    })
+    window.addEventListener('keyup', e => {
+      isKeyDown = false
+    })
+    if (state.settings.specialMouse) {
+      history.pushState(null, null, location.href)
+      window.addEventListener('popstate', function () {
+        history.go(1)
+      })
+    } else {
+      window.addEventListener('popstate', function () {})
+    }
+    controllerInit()
+  }
+
+  onMounted(() => {
+    load()
+  })
 </script>
 <style scoped>
 @media only screen and (max-width: 1280px) {

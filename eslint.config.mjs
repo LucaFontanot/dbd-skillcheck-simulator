@@ -1,62 +1,11 @@
-import vue from "eslint-plugin-vue";
-import vueParser from "vue-eslint-parser";
-import prettier from "eslint-plugin-prettier";
-import globals from "globals";
-import { defineConfig, globalIgnores } from "eslint/config";
-import { FlatCompat } from "@eslint/eslintrc";
-import js from "@eslint/js";
-import path from "node:path";
-import { fileURLToPath } from "node:url";
+import vuetify from 'eslint-config-vuetify'
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-const compat = new FlatCompat({
-  baseDirectory: __dirname,
-  recommendedConfig: js.configs.recommended,
-  allConfig: js.configs.all,
-});
-
-export default defineConfig([
-  globalIgnores(["vendor/**/*", "node_modules/**"]),
-
-  {
-    extends: compat.extends("eslint:recommended", "prettier"),
-    plugins: {
-      prettier,
-      vue,
-    },
-    languageOptions: {
-      globals: {
-        ...globals.browser,
-        ...globals.node,
-        _: true,
-      },
-    },
-    rules: {
-      "prettier/prettier": ["error", { endOfLine: "auto" }],
-      "vue/require-default-prop": 0,
-      "vue/singleline-html-element-content-newline": 0,
-      "vue/component-name-in-template-casing": ["error", "PascalCase"],
-      "no-useless-escape": "off",
-      "no-unused-vars": [
-        "off",
-        {
-          argsIgnorePattern: "^_",
-          varsIgnorePattern: "^_",
-        },
-      ],
-    },
+export default vuetify({
+  rules: {
+    'unicorn/no-this-assignment': 'off',
+    'vue/no-unused-vars': 'off',
+    'no-unused-vars': 'off',
+    'unicorn/prefer-structured-clone': 'off',
+    'complexity': 'off',
   },
-
-  {
-    files: ["**/*.vue"],
-    languageOptions: {
-      parser: vueParser,
-      parserOptions: {
-        ecmaVersion: "latest",
-        sourceType: "module",
-      },
-    },
-  },
-]);
+})

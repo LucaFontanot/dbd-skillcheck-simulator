@@ -1,135 +1,133 @@
 <script setup>
-import { onMounted, ref } from "vue";
-import GameState from "../plugins/store/gameState";
-import Skillcheck from "../plugins/drawer/skillcheck";
-import Assets from "../plugins/drawer/assets";
-import {
-  addGlyph,
-  addGlyphFail,
-  addGlyphSuccess,
-} from "../plugins/store/statsManager";
+  import { onMounted, ref } from 'vue'
+  import Assets from '../plugins/drawer/assets'
+  import Skillcheck from '../plugins/drawer/skillcheck'
+  import GameState from '../plugins/store/gameState'
+  import {
+    addGlyph,
+    addGlyphFail,
+    addGlyphSuccess,
+  } from '../plugins/store/statsManager'
 
-let state = ref({});
-let skillCheck = ref(null);
-const maxTicks = ref(1000);
-const tickTime = ref(500);
-const ticks = ref(0);
-let d = null;
+  const state = ref({})
+  const skillCheck = ref(null)
+  const maxTicks = ref(1000)
+  const tickTime = ref(500)
+  const ticks = ref(0)
+  let d = null
 
-async function getAudio(name) {
-  // eslint-disable-next-line no-async-promise-executor
-  return new Promise(async (resolve, reject) => {
-    const audio = new Audio();
-    audio.oncanplay = function () {
-      resolve(audio);
-    };
-    audio.src = await Assets.getAsset(name);
-  });
-}
-
-function stopGame(status = true) {
-  if (d) {
-    d.animate = false;
-    d.setDisplay(false);
+  async function getAudio (name) {
+    return new Promise(async (resolve, reject) => {
+      const audio = new Audio()
+      audio.addEventListener('canplay', function () {
+        resolve(audio)
+      })
+      audio.src = await Assets.getAsset(name)
+    })
   }
-  if (status) state.value.playStatus = "stop";
-  else state.value.playStatus = "softStop";
-}
 
-function tick() {
-  if (state.value.playStatus === "start") {
-    ticks.value += tickTime.value;
-    if (ticks.value >= maxTicks.value) {
-      stopGame(false);
-      addGlyph(state.value.effects);
-      setTimeout(() => {
-        if (state.value.playStatus === "softStop") startGame();
-      }, 2000);
-      return;
+  function stopGame (status = true) {
+    if (d) {
+      d.animate = false
+      d.setDisplay(false)
     }
+    state.value.playStatus = status ? 'stop' : 'softStop'
   }
-  if (
-    state.value.playStatus === "stop" ||
-    state.value.playStatus === "softStop"
-  ) {
-    return;
-  }
-  setTimeout(tick, tickTime.value);
-}
 
-function startGame() {
-  if (state.value.playStatus === "start") {
-    return;
-  }
-  state.value.playStatus = "start";
-  ticks.value = 0;
-  setTimeout(() => {
-    d = new Skillcheck(skillCheck.value);
-    d.drawGliphSkillcheck({
-      effects: null,
-      perks: {},
-      autoApplyModifiers: true,
-      autoApplyPerks: false,
-    });
-    let startTime = Date.now() - state.value.modifiers.advertisetime;
-    console.log("start", startTime, state.value.modifiers.advertisetime);
-    let onSuccess = (status, angle) => {
-      d.playStatusSound(status);
-      if (status === "fail") {
-        addGlyphFail(state.value.effects);
-        getAudio("skillcheck_fail").then((audio) => {
-          audio.volume = state.value.settings.surround / 100;
-          audio.play();
-        });
-        d.shake(300);
-        stopGame(false);
-        addGlyph(state.value.effects);
+  function tick () {
+    if (state.value.playStatus === 'start') {
+      ticks.value += tickTime.value
+      if (ticks.value >= maxTicks.value) {
+        stopGame(false)
+        addGlyph(state.value.effects)
         setTimeout(() => {
-          if (state.value.playStatus === "softStop") startGame();
-        }, 2000);
-        return;
-      } else if (status === "good") {
-        addGlyphSuccess(state.value.effects);
-        d.drawGliphSkillcheck(
-          {
-            effects: null,
-            perks: {},
-            autoApplyModifiers: true,
-            autoApplyPerks: false,
-          },
-          angle,
-        );
-        d.animateGliph({
-          onSuccess: onSuccess,
-          startTime: Date.now(),
-          startPos: angle + 90,
-        });
+          if (state.value.playStatus === 'softStop') startGame()
+        }, 2000)
+        return
       }
-    };
-    d.animateGliph({
-      onSuccess: onSuccess,
-      startTime: startTime,
-      startPos: 0,
-    });
+    }
+    if (
+      state.value.playStatus === 'stop'
+      || state.value.playStatus === 'softStop'
+    ) {
+      return
+    }
+    setTimeout(tick, tickTime.value)
+  }
+
+  function startGame () {
+    if (state.value.playStatus === 'start') {
+      return
+    }
+    state.value.playStatus = 'start'
+    ticks.value = 0
     setTimeout(() => {
-      tick();
-    }, state.value.modifiers.advertisetime);
-  }, 300);
-}
+      d = new Skillcheck(skillCheck.value)
+      d.drawGliphSkillcheck({
+        effects: null,
+        perks: {},
+        autoApplyModifiers: true,
+        autoApplyPerks: false,
+      })
+      const startTime = Date.now() - state.value.modifiers.advertisetime
+      console.log('start', startTime, state.value.modifiers.advertisetime)
+      const onSuccess = (status, angle) => {
+        d.playStatusSound(status)
+        if (status === 'fail') {
+          addGlyphFail(state.value.effects)
+          getAudio('skillcheck_fail').then(audio => {
+            audio.volume = state.value.settings.surround / 100
+            audio.play()
+          })
+          d.shake(300)
+          stopGame(false)
+          addGlyph(state.value.effects)
+          setTimeout(() => {
+            if (state.value.playStatus === 'softStop') startGame()
+          }, 2000)
+          return
+        } else if (status === 'good') {
+          addGlyphSuccess(state.value.effects)
+          d.drawGliphSkillcheck(
+            {
+              effects: null,
+              perks: {},
+              autoApplyModifiers: true,
+              autoApplyPerks: false,
+            },
+            angle,
+          )
+          d.animateGliph({
+            onSuccess: onSuccess,
+            startTime: Date.now(),
+            startPos: angle + 90,
+          })
+        }
+      }
+      d.animateGliph({
+        onSuccess: onSuccess,
+        startTime: startTime,
+        startPos: 0,
+      })
+      setTimeout(() => {
+        tick()
+      }, state.value.modifiers.advertisetime)
+    }, 300)
+  }
 
-function pauseGame() {
-  state.value.playStatus = "stop";
-}
+  function pauseGame () {
+    state.value.playStatus = 'stop'
+  }
 
-function resumeGame() {
-  state.value.playStatus = "start";
-}
+  function resumeGame () {
+    state.value.playStatus = 'start'
+  }
 
-onMounted(() => {
-  state.value = GameState.getState();
-  state.value.playStatus = "stop";
-  maxTicks.value = state.value.modifiers.glyphduration;
-});
+  onMounted(() => {
+    state.value = GameState.getState()
+    state.value.playStatus = 'stop'
+    maxTicks.value = state.value.modifiers.glyphduration
+  })
 </script>
 
 <template>
@@ -139,23 +137,26 @@ onMounted(() => {
       class="skillcheck hidden"
       height="200"
       width="200"
-    ></canvas>
-    <modifiers></modifiers>
-    <perkshud :show-effects="true" :show-perks="false"></perkshud>
+    />
+
+    <modifiers />
+    <perkshud :show-effects="true" :show-perks="false" />
+
     <startstop
       v-model="state.playStatus"
-      :on-start="startGame"
-      :on-stop="stopGame"
       :on-pause="pauseGame"
       :on-resume="resumeGame"
-    ></startstop>
-    <div class="progress" v-if="state.playStatus === 'start'">
+      :on-start="startGame"
+      :on-stop="stopGame"
+    />
+
+    <div v-if="state.playStatus === 'start'" class="progress">
       <v-progress-linear
         color="grey-lighten-4"
-        :model-value="ticks"
-        :max="maxTicks"
         :height="12"
-      ></v-progress-linear>
+        :max="maxTicks"
+        :model-value="ticks"
+      />
     </div>
   </div>
 </template>

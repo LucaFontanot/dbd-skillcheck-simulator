@@ -1,64 +1,68 @@
 <script setup>
-import Stopwatch from "@/components/stopwatch.vue";
-import { onMounted, ref } from "vue";
+  import { onMounted, ref } from 'vue'
+  import Stopwatch from '@/components/stopwatch.vue'
 
-defineProps({
-  onStart: Function,
-  onStop: Function,
-  onPause: Function,
-  onResume: Function,
-});
-const model = defineModel();
+  defineProps({
+    onStart: Function,
+    onStop: Function,
+    onPause: Function,
+    onResume: Function,
+  })
+  const model = defineModel()
 
-const stopwatch = ref(null);
+  const stopwatch = ref(null)
 
-onMounted(() => {
-  console.log("Mounted startstop component");
-  console.log(stopwatch.value);
-});
+  onMounted(() => {
+    console.log('Mounted startstop component')
+    console.log(stopwatch.value)
+  })
 </script>
 
 <template>
   <div class="fix">
     <div class="d-flex">
       <v-btn
+        v-if="model === 'stop' || model === ''"
+        class="ma-3"
+        prepend-icon="mdi-play"
         variant="outlined"
         @click="onStart()"
-        prepend-icon="mdi-play"
-        class="ma-3"
-        v-if="model === 'stop' || model === ''"
       >
         START
       </v-btn>
+
       <v-btn
+        v-if="model === 'start' || model === 'pause' || model === 'softStop'"
+        class="ma-3"
+        prepend-icon="mdi-stop"
         variant="outlined"
         @click="onStop()"
-        prepend-icon="mdi-stop"
-        class="ma-3"
-        v-if="model === 'start' || model === 'pause' || model === 'softStop'"
       >
         STOP
       </v-btn>
+
       <v-btn
+        v-if="model === 'start' || model === 'softStop'"
+        class="ma-3"
+        prepend-icon="mdi-pause"
         variant="outlined"
         @click="onPause()"
-        prepend-icon="mdi-pause"
-        class="ma-3"
-        v-if="model === 'start' || model === 'softStop'"
       >
         PAUSE
       </v-btn>
+
       <v-btn
+        v-if="model === 'pause'"
+        class="ma-3"
+        prepend-icon="mdi-play"
         variant="outlined"
         @click="onResume()"
-        prepend-icon="mdi-play"
-        class="ma-3"
-        v-if="model === 'pause'"
       >
         RESUME
       </v-btn>
     </div>
-    <Stopwatch class="d-none" ref="stopwatch"></Stopwatch>
+
+    <Stopwatch ref="stopwatch" class="d-none" />
   </div>
 </template>
 

@@ -1,38 +1,45 @@
-import Static from "@/plugins/store/static";
-import { defineStore } from "pinia";
+import { defineStore } from 'pinia'
+import Static from '@/plugins/store/static'
 
 class GameState {
-  updateObjProps(obj, props) {
+  updateObjProps (obj, props) {
     for (const key in props) {
-      if (typeof obj[key] === "undefined") continue;
-      if (typeof props[key] === "object" && !Array.isArray(props[key])) {
-        this.updateObjProps(obj[key], props[key]);
-        continue;
+      if (obj[key] === undefined) {
+        continue
       }
-      obj[key] = props[key];
+      if (typeof props[key] === 'object' && !Array.isArray(props[key])) {
+        this.updateObjProps(obj[key], props[key])
+        continue
+      }
+      obj[key] = props[key]
     }
   }
-  getStatics() {
-    return Static;
+
+  getStatics () {
+    return Static
   }
-  loadGameState(gst) {
-    const storage = localStorage.getItem("gameState");
-    this.updateObjProps(gst, JSON.parse(storage));
+
+  loadGameState (gst) {
+    const storage = localStorage.getItem('gameState')
+    this.updateObjProps(gst, JSON.parse(storage))
   }
-  saveState() {
-    localStorage.setItem("gameState", JSON.stringify(this.gameState));
+
+  saveState () {
+    localStorage.setItem('gameState', JSON.stringify(this.gameState))
   }
-  getState() {
+
+  getState () {
     if (!this.pinia) {
-      this.pinia = defineStore("gamestate", {
+      this.pinia = defineStore('gamestate', {
         state: () => {
-          return this.gameState;
+          return this.gameState
         },
-      })();
+      })()
     }
-    return this.pinia;
+    return this.pinia
   }
-  constructor() {
+
+  constructor () {
     this.gameState = {
       stats: {
         generators: 0,
@@ -84,8 +91,8 @@ class GameState {
         gliphFailEffects: {},
         gliphFailDayEffects: {},
       },
-      currentMode: "generator",
-      playStatus: "stop",
+      currentMode: 'generator',
+      playStatus: 'stop',
       modifiers: JSON.parse(JSON.stringify(this.getStatics().modifiers)),
       effects: {
         madness: {
@@ -146,9 +153,9 @@ class GameState {
         sound: 100,
         surround: 100,
         keyboard: {
-          startKey: "Enter",
-          stopKey: "Enter",
-          keys: ["Space"],
+          startKey: 'Enter',
+          stopKey: 'Enter',
+          keys: ['Space'],
         },
         controller: {
           startKey: 2,
@@ -156,11 +163,11 @@ class GameState {
           keys: [1],
         },
       },
-    };
-    this.pinia = null;
-    this.loadGameState(this.gameState);
+    }
+    this.pinia = null
+    this.loadGameState(this.gameState)
   }
 }
-const gameState = new GameState();
+const gameState = new GameState()
 
-export default gameState;
+export default gameState

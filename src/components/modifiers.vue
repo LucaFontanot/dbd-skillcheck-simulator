@@ -1,28 +1,28 @@
 <script setup>
-import { onMounted, ref } from "vue";
-import GameState from "../plugins/store/gameState";
+  import { onMounted, ref } from 'vue'
+  import GameState from '../plugins/store/gameState'
 
-const state = ref({
-  effects: {},
-});
-const statics = ref({
-  effects: {},
-});
-const effectDialog = ref(false);
+  const state = ref({
+    effects: {},
+  })
+  const statics = ref({
+    effects: {},
+  })
+  const effectDialog = ref(false)
 
-function save() {
-  GameState.saveState();
-}
+  function save () {
+    GameState.saveState()
+  }
 
-function getImage(name) {
-  // return new URL(name, import.meta.url).href;
-  return name;
-}
+  function getImage (name) {
+    // return new URL(name, import.meta.url).href;
+    return name
+  }
 
-onMounted(() => {
-  state.value = GameState.getState();
-  statics.value = GameState.getStatics();
-});
+  onMounted(() => {
+    state.value = GameState.getState()
+    statics.value = GameState.getStatics()
+  })
 </script>
 
 <template>
@@ -31,6 +31,7 @@ onMounted(() => {
       <v-card-title class="text-center">
         <h1>Effects</h1>
       </v-card-title>
+
       <v-card-text>
         <div class="d-flex justify-center flex-wrap">
           <div
@@ -40,7 +41,7 @@ onMounted(() => {
             style="width: 230px"
           >
             <v-tooltip>
-              <template v-slot:activator="{ props }">
+              <template #activator="{ props }">
                 <div
                   @click="
                     state.effects[effect.prop].active =
@@ -48,82 +49,91 @@ onMounted(() => {
                   "
                 >
                   <v-badge
-                    icon="mdi-chevron-triple-down"
                     v-if="effect.type === 'debuff'"
                     color="red-darken-4"
+                    icon="mdi-chevron-triple-down"
                   >
                     <img
                       v-bind="props"
                       :src="getImage(effect.icon)"
                       style="width: 80px; position: absolute"
-                    />
+                    >
+
                     <img
                       src="@/assets/icons/debuff_combo.png"
                       style="width: 80px"
-                    />
+                    >
                   </v-badge>
+
                   <v-badge
-                    icon="mdi-chevron-triple-up"
                     v-else-if="effect.type === 'buff'"
                     color="blue-darken-1"
+                    icon="mdi-chevron-triple-up"
                   >
                     <img
                       v-bind="props"
                       :src="getImage(effect.icon)"
                       style="width: 80px; position: absolute"
-                    />
+                    >
+
                     <img
                       src="@/assets/icons/buff_combo.png"
                       style="width: 80px"
-                    />
+                    >
                   </v-badge>
                 </div>
               </template>
-              <p v-html="effect.tip.replace(/\n/g, '<br>')"></p>
+
+              <p v-html="effect.tip.replace(/\n/g, '<br>')" />
             </v-tooltip>
+
             <v-switch
               v-model="state.effects[effect.prop].active"
-              inset
-              color="primary"
-              style="width: 100%"
-              :label="effect.name"
               class="pa-3"
+              color="primary"
+              inset
+              :label="effect.name"
+              style="width: 100%"
               @update:model-value="save"
-            ></v-switch>
+            />
+
             <v-select
-              class="pl-5 pr-5"
               v-if="effect.hasOwnProperty('tokenRange')"
-              label="Tokens"
-              :items="effect.tokenRange"
               v-model="state.effects[effect.prop].tokens"
-              @update:model-value="save"
-            ></v-select>
-            <v-select
               class="pl-5 pr-5"
-              v-if="effect.hasOwnProperty('tierRange')"
-              label="Tier"
-              :items="effect.tierRange"
-              v-model="state.effects[effect.prop].tier"
+              :items="effect.tokenRange"
+              label="Tokens"
               @update:model-value="save"
-            ></v-select>
+            />
+
+            <v-select
+              v-if="effect.hasOwnProperty('tierRange')"
+              v-model="state.effects[effect.prop].tier"
+              class="pl-5 pr-5"
+              :items="effect.tierRange"
+              label="Tier"
+              @update:model-value="save"
+            />
           </div>
         </div>
       </v-card-text>
+
       <v-card-actions>
         <v-btn width="100%" @click="effectDialog = false">Close</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
+
   <div class="fix">
     <v-tooltip text="Effects">
-      <template v-slot:activator="{ props }">
+      <template #activator="{ props }">
         <v-btn
           icon
           v-bind="props"
           variant="outlined"
           @click="effectDialog = true"
         >
-          <img src="@/assets/icons/madness.webp" class="addon" />
+          <img class="addon" src="@/assets/icons/madness.webp">
         </v-btn>
       </template>
     </v-tooltip>

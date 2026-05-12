@@ -1,85 +1,85 @@
 <script setup>
-import { ref, computed, onBeforeUnmount } from "vue";
+  import { computed, onBeforeUnmount, ref } from 'vue'
 
-const ticks = ref(0);
-const timerId = ref(null);
-const isRunning = ref(false);
-const stoppedHistory = ref([]);
+  const ticks = ref(0)
+  const timerId = ref(null)
+  const isRunning = ref(false)
+  const stoppedHistory = ref([])
 
-function formatTicks(t) {
-  const totalSeconds = Math.floor(t / 10);
-  const tenths = t % 10;
-  const minutes = Math.floor(totalSeconds / 60);
-  const seconds = totalSeconds % 60;
-  const mm = String(minutes).padStart(2, "0");
-  const ss = String(seconds).padStart(2, "0");
-  return `${mm}:${ss}.${tenths}`;
-}
-
-const currentDisplay = computed(() => formatTicks(ticks.value));
-const lastStopped = computed(() =>
-  stoppedHistory.value.length ? stoppedHistory.value[0] : null,
-);
-const lastStoppedDisplay = computed(() =>
-  lastStopped.value !== null ? formatTicks(lastStopped.value) : null,
-);
-const diffDisplay = computed(() => {
-  if (lastStopped.value === null) return null;
-  const diffTicks = ticks.value - lastStopped.value; // negativo se corrente < ultimo fermo
-  const sign = diffTicks >= 0 ? "+" : "-";
-  const absTicks = Math.abs(diffTicks);
-  return `${sign}${formatTicks(absTicks)}`;
-});
-
-function start() {
-  if (isRunning.value) return;
-  timerId.value = window.setInterval(() => {
-    ticks.value += 1; // +0.1s
-  }, 100);
-  isRunning.value = true;
-}
-
-function pause() {
-  if (timerId.value !== null) {
-    clearInterval(timerId.value);
-    timerId.value = null;
+  function formatTicks (t) {
+    const totalSeconds = Math.floor(t / 10)
+    const tenths = t % 10
+    const minutes = Math.floor(totalSeconds / 60)
+    const seconds = totalSeconds % 60
+    const mm = String(minutes).padStart(2, '0')
+    const ss = String(seconds).padStart(2, '0')
+    return `${mm}:${ss}.${tenths}`
   }
-  isRunning.value = false;
-}
 
-function stop() {
-  if (ticks.value > 0 || isRunning.value) {
-    pause();
-    stoppedHistory.value.unshift(ticks.value);
-    if (stoppedHistory.value.length > 5) stoppedHistory.value.pop();
-    ticks.value = 0;
+  const currentDisplay = computed(() => formatTicks(ticks.value))
+  const lastStopped = computed(() =>
+    stoppedHistory.value.length > 0 ? stoppedHistory.value[0] : null,
+  )
+  const lastStoppedDisplay = computed(() =>
+    lastStopped.value === null ? null : formatTicks(lastStopped.value),
+  )
+  const diffDisplay = computed(() => {
+    if (lastStopped.value === null) return null
+    const diffTicks = ticks.value - lastStopped.value // negativo se corrente < ultimo fermo
+    const sign = diffTicks >= 0 ? '+' : '-'
+    const absTicks = Math.abs(diffTicks)
+    return `${sign}${formatTicks(absTicks)}`
+  })
+
+  function start () {
+    if (isRunning.value) return
+    timerId.value = window.setInterval(() => {
+      ticks.value += 1 // +0.1s
+    }, 100)
+    isRunning.value = true
   }
-}
 
-function reset() {
-  pause();
-  ticks.value = 0;
-}
+  function pause () {
+    if (timerId.value !== null) {
+      clearInterval(timerId.value)
+      timerId.value = null
+    }
+    isRunning.value = false
+  }
 
-function clearHistory() {
-  stoppedHistory.value = [];
-}
+  function stop () {
+    if (ticks.value > 0 || isRunning.value) {
+      pause()
+      stoppedHistory.value.unshift(ticks.value)
+      if (stoppedHistory.value.length > 5) stoppedHistory.value.pop()
+      ticks.value = 0
+    }
+  }
 
-onBeforeUnmount(() => {
-  if (timerId.value !== null) clearInterval(timerId.value);
-});
+  function reset () {
+    pause()
+    ticks.value = 0
+  }
 
-defineExpose({
-  start,
-  pause,
-  stop,
-  reset,
-  clearHistory,
-  getTicks: () => ticks.value,
-  isRunning,
-  stoppedHistory,
-  formatTicks,
-});
+  function clearHistory () {
+    stoppedHistory.value = []
+  }
+
+  onBeforeUnmount(() => {
+    if (timerId.value !== null) clearInterval(timerId.value)
+  })
+
+  defineExpose({
+    start,
+    pause,
+    stop,
+    reset,
+    clearHistory,
+    getTicks: () => ticks.value,
+    isRunning,
+    stoppedHistory,
+    formatTicks,
+  })
 </script>
 
 <template>
@@ -88,13 +88,14 @@ defineExpose({
       <div class="current">
         <div class="label">Corrente</div>
         <div class="time">{{ currentDisplay }}</div>
-        <div class="status" v-if="isRunning">Running</div>
-        <div class="status" v-else>Paused</div>
+        <div v-if="isRunning" class="status">Running</div>
+        <div v-else class="status">Paused</div>
       </div>
 
-      <div class="last" v-if="lastStoppedDisplay">
+      <div v-if="lastStoppedDisplay" class="last">
         <div class="label">Last time</div>
         <div class="time">{{ lastStoppedDisplay }}</div>
+
         <div class="diff">
           Difference: <span>{{ diffDisplay }}</span>
         </div>
