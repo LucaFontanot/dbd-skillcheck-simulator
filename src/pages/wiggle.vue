@@ -1,11 +1,11 @@
 <script setup>
   import { onMounted, ref } from 'vue'
+  import { useSessionChart } from '../composables/useSessionChart'
   import Assets from '../plugins/drawer/assets'
   import Skillcheck from '../plugins/drawer/skillcheck'
   import GameState from '../plugins/store/gameState'
   import {
     endSession,
-    recordResult,
     startSession,
   } from '../plugins/store/sessionManager'
   import {
@@ -14,6 +14,8 @@
     addWiggleGood,
     addWiggleSuccess,
   } from '../plugins/store/statsManager'
+
+  const { sessionResults, trackResult, resetResults } = useSessionChart()
 
   const state = ref({})
   const skillCheck = ref(null)
@@ -71,6 +73,7 @@
     }
     state.value.playStatus = 'start'
     ticks.value = 0
+    resetResults()
     startSession('wiggle', {}, state.value.effects)
     let clockWise = true
     const goodSize = state.value.modifiers.wiggleGood
@@ -94,7 +97,7 @@
         let color = '#fff'
         switch (status) {
           case 'fail': {
-            recordResult('fail')
+            trackResult('fail')
             addWiggleFail(state.value.effects)
             d.shake(300)
             color = '#f00'
@@ -107,7 +110,7 @@
             break
           }
           case 'good': {
-            recordResult('good')
+            trackResult('good')
             addWiggleGood(state.value.effects)
             clockWise = !clockWise
             combo = 0
@@ -115,7 +118,7 @@
             break
           }
           case 'great': {
-            recordResult('great')
+            trackResult('great')
             addWiggleSuccess(state.value.effects)
             color = '#ffe600'
             clockWise = !clockWise
@@ -200,6 +203,8 @@
         :model-value="ticks"
       />
     </div>
+
+    <SessionLiveChart :results="sessionResults" />
   </div>
 </template>
 

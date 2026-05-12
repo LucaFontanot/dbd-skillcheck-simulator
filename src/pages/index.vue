@@ -27,17 +27,19 @@
         :model-value="ticks"
       />
     </div>
+
+    <SessionLiveChart :results="sessionResults" />
   </div>
 </template>
 
 <script setup>
   import { onMounted, ref } from 'vue'
   import Skillcheck from '@/plugins/drawer/skillcheck'
+  import { useSessionChart } from '../composables/useSessionChart'
   import Assets from '../plugins/drawer/assets'
   import GameState from '../plugins/store/gameState'
   import {
     endSession,
-    recordResult,
     startSession,
   } from '../plugins/store/sessionManager'
   import {
@@ -47,6 +49,8 @@
     addGeneratorSkillCheckGreat,
     addGeneratorTime,
   } from '../plugins/store/statsManager'
+
+  const { sessionResults, trackResult, resetResults } = useSessionChart()
 
   const skillCheck = ref(null)
   const state = ref({})
@@ -177,7 +181,7 @@
             d.playStatusSound(status)
             switch (status) {
               case 'fail': {
-                recordResult('fail')
+                trackResult('fail')
                 addGeneratorSkillCheckFail(state.value.perks, state.value.effects)
                 getAudio('generator_explode').then(audio => {
                   audio.volume = state.value.settings.surround / 100
@@ -200,7 +204,7 @@
                 break
               }
               case 'great': {
-                recordResult('great')
+                trackResult('great')
                 addGeneratorSkillCheckGreat(state.value.perks, state.value.effects)
                 let increase = 1000
                 if (
@@ -228,7 +232,7 @@
                 break
               }
               case 'good': {
-                recordResult('good')
+                trackResult('good')
                 addGeneratorSkillCheckGood(state.value.perks, state.value.effects)
                 if (state.value.perks.ruin.active) {
                   ticks.value
@@ -262,6 +266,7 @@
     hasGlyphStarted = false
     nextSkillCheck.value = 1000
     d = new Skillcheck(skillCheck.value)
+    resetResults()
     startSession('generator', state.value.perks, state.value.effects)
     tick()
   }

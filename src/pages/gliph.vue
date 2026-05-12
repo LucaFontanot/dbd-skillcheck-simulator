@@ -1,11 +1,11 @@
 <script setup>
   import { onMounted, ref } from 'vue'
+  import { useSessionChart } from '../composables/useSessionChart'
   import Assets from '../plugins/drawer/assets'
   import Skillcheck from '../plugins/drawer/skillcheck'
   import GameState from '../plugins/store/gameState'
   import {
     endSession,
-    recordResult,
     startSession,
   } from '../plugins/store/sessionManager'
   import {
@@ -13,6 +13,8 @@
     addGlyphFail,
     addGlyphSuccess,
   } from '../plugins/store/statsManager'
+
+  const { sessionResults, trackResult, resetResults } = useSessionChart()
 
   const state = ref({})
   const skillCheck = ref(null)
@@ -68,6 +70,7 @@
     }
     state.value.playStatus = 'start'
     ticks.value = 0
+    resetResults()
     startSession('glyph', {}, state.value.effects)
     setTimeout(() => {
       d = new Skillcheck(skillCheck.value)
@@ -82,7 +85,7 @@
       const onSuccess = (status, angle) => {
         d.playStatusSound(status)
         if (status === 'fail') {
-          recordResult('fail')
+          trackResult('fail')
           addGlyphFail(state.value.effects)
           getAudio('skillcheck_fail').then(audio => {
             audio.volume = state.value.settings.surround / 100
@@ -97,7 +100,7 @@
           }, 2000)
           return
         } else if (status === 'good') {
-          recordResult('good')
+          trackResult('good')
           addGlyphSuccess(state.value.effects)
           d.drawGliphSkillcheck(
             {
@@ -169,6 +172,8 @@
         :model-value="ticks"
       />
     </div>
+
+    <SessionLiveChart :results="sessionResults" />
   </div>
 </template>
 
